@@ -100,11 +100,13 @@ src/
 ├── commands/               # 슬래시 커맨드
 │   ├── start.md            # 작업 시작: 분석 → 계획 → 확인
 │   ├── done.md             # 작업 완료: 검증 → 커밋 → PR
+│   ├── commit.md           # staged 변경사항으로 커밋 메시지 생성 후 커밋
+│   ├── quality.md          # 포맷 → 린트 → 타입 체크 순서로 실행
 │   └── setup-notifier.md   # 초기 환경 설정 (macOS terminal-notifier)
 │
 ├── instructions/           # 작업 방식·검증 가이드
 │   ├── README.md           # 스킬 맵 및 상황별 참조 가이드
-│   ├── multi-agent/        # 멀티 에이전트 협업 패턴
+│   ├── multi-agent/        # 멀티 에이전트 협업 패턴 (coordination-guide, execution-patterns, model-routing)
 │   ├── validation/         # 금지 패턴, 필수 행동, 출시 게이트
 │   └── workflow-patterns/  # 복잡도별 작업 단계
 │
@@ -157,9 +159,11 @@ src/
 
 | 커맨드            | 설명                                     |
 | ----------------- | ---------------------------------------- |
-| `/start`          | 작업 시작 — 분석 → 계획 수립 → 구현 확인 |
-| `/done`           | 작업 완료 — 검증 → 테스트 → 커밋 → PR    |
-| `/setup-notifier` | macOS 알림 초기 환경 설정 (최초 1회)     |
+| `/start`          | 작업 시작 — 분석 → 계획 수립 → 구현 확인        |
+| `/done`           | 작업 완료 — 검증 → 테스트 → 커밋 → PR           |
+| `/commit`         | staged 변경사항 분석 후 커밋 메시지 생성 및 커밋 |
+| `/quality`        | 포맷 → 린트 → 타입 체크 순서로 실행 및 자동 수정 |
+| `/setup-notifier` | macOS 알림 초기 환경 설정 (최초 1회)            |
 
 #### 스킬 (자동 트리거)
 
@@ -179,14 +183,16 @@ src/
 ### 전형적인 개발 사이클
 
 ```
-/start          → 작업 분석 + 계획 수립
+/start              → 작업 분석 + 계획 수립
   ↓ 구현
-component-creator  → 새 컴포넌트/훅 생성 (프로젝트 패턴 자동 적용)
-bug-fix            → 버그 발견 시 원인 분석 + 옵션 제시
-refactor           → 구조 개선 필요 시
-test-generator     → 테스트 작성 + 커버리지 확인
+component-creator   → 새 컴포넌트/훅 생성 (프로젝트 패턴 자동 적용)
+bug-fix             → 버그 발견 시 원인 분석 + 옵션 제시
+refactor            → 구조 개선 필요 시
+test-generator      → 테스트 작성 + 커버리지 확인
   ↓
-/done           → 린트·타입체크 → 커밋 → PR
+/quality            → 포맷 → 린트 → 타입 체크 자동 수정
+/commit             → 커밋 메시지 생성 후 커밋 (또는 /done에서 통합 실행)
+/done               → 검증 → 커밋 → PR (통합 완료 플로우)
   ↓ PR 리뷰 후
 pr-review-responder → 리뷰 코멘트 반영
 ```
