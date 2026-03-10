@@ -6,12 +6,12 @@
 
 ## 지원 툴
 
-| 툴          | 설치 옵션    | 설치 경로                      |
-| ----------- | ------------ | ------------------------------ |
-| Claude Code | `--claude`   | `.claude/`                     |
-| Cursor      | `--cursor`   | `.cursor/`                     |
-| OpenCode    | `--opencode` | `.opencode/` + `AGENTS.md`     |
-| Codex       | `--codex`    | `.codex/` + `.codex/AGENTS.md` |
+| 툴          | 설치 옵션    | 설치 경로                                          |
+| ----------- | ------------ | -------------------------------------------------- |
+| Claude Code | `--claude`   | `.claude/`                                         |
+| Cursor      | `--cursor`   | `.cursor/` + `.agents/skills/`                     |
+| OpenCode    | `--opencode` | `.opencode/` + `AGENTS.md`                         |
+| Codex       | `--codex`    | `.codex/` + `.agents/skills/` + `.codex/AGENTS.md` |
 
 ---
 
@@ -61,7 +61,7 @@ cd ai-rules-kit
 ./install.sh --all /path/to/your-project
 ```
 
-설치 시 툴별로 필요한 파일만 복사됩니다. OpenCode, Codex는 `AGENTS.md`가 함께 생성되어 어떤 파일을 언제 참조할지 안내합니다.
+설치 시 툴별로 필요한 파일만 복사됩니다. Cursor, Codex는 스킬을 `.agents/skills/`에 따로 설치하고, OpenCode, Codex는 `AGENTS.md`가 함께 생성되어 어떤 파일을 언제 참조할지 안내합니다.
 
 ---
 
@@ -88,10 +88,14 @@ src/
 ├── skills/                 # 복잡한 다단계 작업 스킬
 │   ├── commit-helper/      # 커밋 메시지 자동 생성 (Conventional Commits)
 │   ├── code-quality/       # 린트·포맷·타입체크 통합 실행
-│   ├── refactor/           # 코드 리팩토링 분석 및 실행
-│   ├── bug-fix/            # 버그 분석·수정 (3가지 옵션 제시)
-│   ├── docs-creator/       # CLAUDE.md·SKILL.md 문서 작성
-│   └── agents-generator/   # 프로젝트 분석 후 AGENTS.md 생성
+│   ├── bug-fix/            # 버그 분석·수정 (2-3가지 옵션 제시)
+│   ├── refactor/           # 코드 리팩토링 분석 및 단계별 실행
+│   ├── component-creator/  # 프로젝트 패턴 학습 후 컴포넌트/훅 생성
+│   ├── test-generator/     # 테스트 케이스 생성 및 커버리지 리포트
+│   ├── pr-review-responder/# PR 리뷰 코멘트 분류 및 자동 반영
+│   ├── migration-helper/   # 라이브러리 버전 업그레이드 및 패턴 마이그레이션
+│   ├── docs-creator/       # CLAUDE.md·SKILL.md·AGENTS.md 문서 작성
+│   └── agents-generator/   # 프로젝트 분석 후 루트 지시문 자동 생성
 │
 ├── commands/               # 슬래시 커맨드
 │   ├── start.md            # 작업 시작: 분석 → 계획 → 확인
@@ -99,7 +103,9 @@ src/
 │   └── setup-notifier.md   # 초기 환경 설정 (macOS terminal-notifier)
 │
 ├── instructions/           # 작업 방식·검증 가이드
+│   ├── README.md           # 스킬 맵 및 상황별 참조 가이드
 │   ├── multi-agent/        # 멀티 에이전트 협업 패턴
+│   ├── validation/         # 금지 패턴, 필수 행동, 출시 게이트
 │   └── workflow-patterns/  # 복잡도별 작업 단계
 │
 ├── hooks/                  # 이벤트 훅 (Claude, Cursor, Codex용)
@@ -115,15 +121,15 @@ src/
 
 각 툴에 맞는 파일만 복사되며, 비호환 필드는 자동으로 변환됩니다.
 
-| 디렉토리        | Claude  | Cursor  | OpenCode |  Codex  |
-| --------------- | :-----: | :-----: | :------: | :-----: |
-| `hooks/`        |   ✅    |   ✅    |    ❌    |   ✅    |
-| `plugins/`      |   ❌    |   ❌    |    ✅    |   ❌    |
-| `agents/`       | ✅ 원본 | ✅ 원본 | ✅ 변환  | ✅ 변환 |
-| `rules/`        |   ✅    |   ✅    |    ✅    |   ✅    |
-| `skills/`       |   ✅    |   ✅    |    ✅    |   ✅    |
-| `commands/`     |   ✅    |   ✅    |    ✅    |   ✅    |
-| `settings.json` |   ✅    |   ❌    |    ❌    |   ❌    |
+| 디렉토리              | Claude  | Cursor           | OpenCode |  Codex           |
+| --------------------- | :-----: | :--------------: | :------: | :--------------: |
+| `hooks/`              |   ✅    |       ✅         |    ❌    |       ✅         |
+| `plugins/`            |   ❌    |       ❌         |    ✅    |       ❌         |
+| `agents/`             | ✅ 원본 |    ✅ 원본       | ✅ 변환  |    ✅ 변환       |
+| `rules/`              |   ✅    |       ✅         |    ✅    |       ✅         |
+| `skills/`             | ✅ `.claude/skills/` | ✅ `.agents/skills/` | ✅ `.opencode/skills/` | ✅ `.agents/skills/` |
+| `commands/`           |   ✅    |       ✅         |    ✅    |       ✅         |
+| `settings.json`       |   ✅    |       ❌         |    ❌    |       ❌         |
 
 > **agents/ 변환 내용**
 >
@@ -147,16 +153,43 @@ src/
 
 ### Skills & Commands
 
-| 스킬 / 커맨드       | 설명                                       |
-| ------------------- | ------------------------------------------ |
-| `/commit-helper`    | staged 변경사항 기반 커밋 메시지 자동 생성 |
-| `/code-quality`     | 린트·포맷·타입체크 통합 실행               |
-| `/refactor`         | 코드 리팩토링 분석 및 단계별 실행          |
-| `/bug-fix`          | 버그 원인 분석 후 3가지 해결 옵션 제시     |
-| `/docs-creator`     | CLAUDE.md·SKILL.md 문서 작성               |
-| `/agents-generator` | 프로젝트 분석 후 AGENTS.md 자동 생성       |
-| `/start`            | 작업 시작 — 분석 → 계획 수립 → 구현 확인   |
-| `/done`             | 작업 완료 — 검증 → 테스트 → 커밋 → PR      |
+#### 커맨드 (직접 호출)
+
+| 커맨드            | 설명                                     |
+| ----------------- | ---------------------------------------- |
+| `/start`          | 작업 시작 — 분석 → 계획 수립 → 구현 확인 |
+| `/done`           | 작업 완료 — 검증 → 테스트 → 커밋 → PR    |
+| `/setup-notifier` | macOS 알림 초기 환경 설정 (최초 1회)     |
+
+#### 스킬 (자동 트리거)
+
+| 스킬                  | 트리거                           | 설명                                             |
+| --------------------- | -------------------------------- | ------------------------------------------------ |
+| `commit-helper`       | "커밋 메시지 만들어줘"           | staged 변경사항 기반 커밋 메시지 자동 생성       |
+| `code-quality`        | "린트", "포맷", "타입체크"       | 린트·포맷·타입체크 통합 실행                     |
+| `bug-fix`             | "버그", "오류", "에러"           | 버그 원인 분석 후 2-3가지 해결 옵션 제시         |
+| `refactor`            | "리팩토링", "구조 개선"          | 정책 보호 테스트 포함 단계별 리팩토링            |
+| `component-creator`   | "컴포넌트 만들어", "페이지 추가" | 프로젝트 패턴 학습 후 일관된 보일러플레이트 생성 |
+| `test-generator`      | "테스트 작성", "커버리지 올려"   | 테스트 케이스 생성 + 커버리지 리포트             |
+| `pr-review-responder` | "리뷰 반영", PR 번호/URL         | 리뷰 코멘트 수용/거절/질문 분류 후 자동 반영     |
+| `migration-helper`    | "업그레이드", "마이그레이션"     | 라이브러리 버전 업그레이드 단계적 실행           |
+| `docs-creator`        | "문서 작성", "CLAUDE.md"         | AI 코딩 도구용 문서 작성                         |
+| `agents-generator`    | "루트 지시문 생성"               | 프로젝트 분석 후 CLAUDE.md/AGENTS.md 생성        |
+
+### 전형적인 개발 사이클
+
+```
+/start          → 작업 분석 + 계획 수립
+  ↓ 구현
+component-creator  → 새 컴포넌트/훅 생성 (프로젝트 패턴 자동 적용)
+bug-fix            → 버그 발견 시 원인 분석 + 옵션 제시
+refactor           → 구조 개선 필요 시
+test-generator     → 테스트 작성 + 커버리지 확인
+  ↓
+/done           → 린트·타입체크 → 커밋 → PR
+  ↓ PR 리뷰 후
+pr-review-responder → 리뷰 코멘트 반영
+```
 
 ### 통합 사고 모델
 

@@ -1,6 +1,8 @@
 ---
 name: docs-creator
-description: AI 코딩 도구 문서 작성. Claude용 CLAUDE.md, Codex/OpenCode용 AGENTS.md, SKILL.md, COMMAND.md를 일관된 규칙으로 작성.
+description: AI 코딩 도구 문서 작성. CLAUDE.md, AGENTS.md, SKILL.md, COMMAND.md, rules/*.md 작성/수정 요청 시 이 스킬을 활성화. 새 프로젝트 세팅, 스킬/커맨드 신규 작성, 규칙 추가 모두 포함.
+user-invocable: true
+allowed-tools: Read, Grep, Glob, Write, Edit
 metadata:
   version: "1.1.0"
 ---
@@ -156,32 +158,41 @@ const fn = (): ReturnType => { ... }
 ````markdown
 ---
 name: skill-name
-description: 한 줄 설명
+description: 트리거 키워드를 포함한 한 줄 설명. "X", "Y" 입력 시 이 스킬 활성화.
+user-invocable: true
+allowed-tools: Read, Edit, Bash
+metadata:
+  version: "1.0.0"
 ---
 
-<trigger_conditions>
+# Skill Name
+
+> 한 줄 목적 설명
+
+## 트리거 조건
+
 | 트리거 | 반응 |
 |--------|------|
-| "키워드" | 즉시 실행 |
-</trigger_conditions>
+| "키워드" | 스킬 활성화 |
 
----
+## 복잡도 판단
 
-<workflow>
-<step number="1">
-<action>작업</action>
-<tools>Tool1</tools>
-</step>
-</workflow>
+| 복잡도 | 기준 | 접근 |
+|--------|------|------|
+| LOW | 단순 | 바로 실행 |
+| HIGH | 복잡 | 분석 후 실행 |
 
----
+## 워크플로우
 
-<examples>
-```typescript
-// 실행 가능 코드
-```
+### Phase 1: 분석
 
-</examples>
+### Phase 2: 실행
+
+## 금지 패턴
+
+| 금지 | 이유 |
+|------|------|
+| {금지 사항} | {이유} |
 ````
 
 ---
@@ -195,21 +206,20 @@ allowed-tools: Read, Edit
 argument-hint: <인자>
 ---
 
-<purpose>
+## 목적
+
 구체적 목표
-</purpose>
 
----
+## 수행 작업
 
-<workflow>
-실행 단계
-</workflow>
+### 1. 단계명
 
----
+### 2. 단계명
 
-<examples>
-✅/❌ 비교
-</examples>
+## 완료 조건
+
+- [ ] 조건1
+- [ ] 조건2
 ```
 
 ---

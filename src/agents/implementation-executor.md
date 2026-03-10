@@ -10,6 +10,8 @@ model: sonnet
 @../instructions/validation/forbidden-patterns.md
 @../instructions/validation/release-readiness-gate.md
 @../rules/core/react-nextjs-conventions.md
+@../rules/core/react-hooks-patterns.md
+@../rules/core/nextjs-app-router.md
 
 # Implementation Executor Agent
 

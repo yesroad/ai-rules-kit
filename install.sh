@@ -5,9 +5,9 @@
 # 소스: src/ (단일 원본)
 #
 #   --claude   src/ 전체 복사                         → .claude/
-#   --cursor   src/ 전체 복사                         → .cursor/
+#   --cursor   src/ 복사 (skills 제외) + .agents/skills/ → .cursor/ + .agents/
 #   --opencode src/ 전체 복사 + AGENTS.md             → .opencode/
-#   --codex    src/ 전체 복사 + AGENTS.md             → .codex/
+#   --codex    src/ 복사 (skills 제외) + .agents/skills/ + AGENTS.md → .codex/ + .agents/
 #   --all      위 4개 모두
 #
 # 원격 실행 (curl | bash):
@@ -54,10 +54,10 @@ usage() {
   echo "Usage: $0 [--claude|--cursor|--opencode|--codex|--all] [target-dir]"
   echo ""
   echo "Options:"
-  echo "  --claude    src/ 복사 (Claude Code)"
-  echo "  --cursor    rules + agents + skills + commands 복사 (Cursor)"
-  echo "  --opencode  agents + skills + commands 복사 + AGENTS.md (OpenCode)"
-  echo "  --codex     skills 복사 + AGENTS.md (Codex)"
+  echo "  --claude    src/ 전체 복사 (Claude Code)"
+  echo "  --cursor    src/ 복사 (plugins/, skills/, settings 제외) + .agents/skills/ (Cursor)"
+  echo "  --opencode  src/ 전체 복사 (hooks/, settings 제외) + AGENTS.md (OpenCode)"
+  echo "  --codex     src/ 복사 (plugins/, skills/, settings 제외) + .agents/skills/ + AGENTS.md (Codex)"
   echo "  --all       위 4개 모두"
   echo ""
   echo "target-dir: 설치 경로 (기본값: 현재 디렉토리)"
@@ -231,6 +231,15 @@ install_claude() {
 
   echo -e "  ${GREEN}✓${NC} .claude/ 복사 완료"
 
+  local mcp_src="$SCRIPT_DIR/.mcp.json"
+  if [[ -f "$mcp_src" ]]; then
+    if [[ -f "$target/.mcp.json" ]]; then
+      echo -e "  ${YELLOW}경고: .mcp.json 이미 존재. 덮어씁니다.${NC}"
+    fi
+    cp "$mcp_src" "$target/.mcp.json"
+    echo -e "  ${GREEN}✓${NC} .mcp.json 복사 완료"
+  fi
+
   local settings="$target/.claude/settings.local.json"
   if [[ -f "$settings" ]]; then
     echo -e "  ${YELLOW}경고: settings.local.json 이미 존재. 훅 설정 스킵 (/setup-notifier로 수동 병합)${NC}"
@@ -263,12 +272,17 @@ install_cursor() {
   mkdir -p "$target/.cursor"
   rsync -a \
     --exclude='plugins' \
+    --exclude='skills' \
     --exclude='settings.json' \
     --exclude='settings.local.json' \
     --exclude='.DS_Store' \
     "$SRC_DIR/" "$target/.cursor/" > /dev/null
   rm -f "$target/.cursor/settings.json" "$target/.cursor/settings.local.json"
-  echo -e "  ${GREEN}✓${NC} ${DIM}src/${NC} (plugins/, settings 제외)"
+  echo -e "  ${GREEN}✓${NC} ${DIM}src/${NC} (plugins/, skills/, settings 제외)"
+
+  mkdir -p "$target/.agents/skills"
+  rsync -a --exclude='.DS_Store' "$SKILLS_DIR/" "$target/.agents/skills/" > /dev/null
+  echo -e "  ${GREEN}✓${NC} .agents/skills/ 복사"
 
   local hooks_file="$target/.cursor/hooks.json"
   if [[ -f "$hooks_file" ]]; then
@@ -318,17 +332,22 @@ install_codex() {
   mkdir -p "$target/.codex"
   rsync -a \
     --exclude='plugins' \
+    --exclude='skills' \
     --exclude='settings.json' \
     --exclude='settings.local.json' \
     --exclude='.DS_Store' \
     "$SRC_DIR/" "$target/.codex/" > /dev/null
   rm -f "$target/.codex/settings.json" "$target/.codex/settings.local.json"
-  echo -e "  ${GREEN}✓${NC} ${DIM}src/${NC} (plugins/, settings 제외)"
+  echo -e "  ${GREEN}✓${NC} ${DIM}src/${NC} (plugins/, skills/, settings 제외)"
+
+  mkdir -p "$target/.agents/skills"
+  rsync -a --exclude='.DS_Store' "$SKILLS_DIR/" "$target/.agents/skills/" > /dev/null
+  echo -e "  ${GREEN}✓${NC} .agents/skills/ 복사"
 
   strip_agent_fields "$target/.codex"
   echo -e "  ${GREEN}✓${NC} agents/ 필드 변환 (tools/model 제거)"
 
-  create_agents_md "$target" "$target/.codex/AGENTS.md" ".codex"
+  create_agents_md "$target" "$target/.codex/AGENTS.md" ".codex" ".agents/skills"
 
   echo -e "  ${GREEN}✓${NC} Codex 복사 완료"
 }

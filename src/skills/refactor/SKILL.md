@@ -1,6 +1,8 @@
 ---
 name: refactor
-description: 코드 리팩토링 분석 및 실행. 정책 보호 테스트 포함.
+description: 코드 리팩토링 분석 및 실행. "리팩토링", "구조 개선", "중복 제거", "분리", "정리", "클린업"이 언급될 때 이 스킬을 활성화. 정책 보호 테스트 포함.
+user-invocable: true
+allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 metadata:
   version: "1.0.0"
 ---

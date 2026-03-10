@@ -1,6 +1,8 @@
 ---
 name: bug-fix
-description: 버그 분석 및 수정. 2-3가지 해결 옵션 제시 후 구현.
+description: 버그 분석 및 수정. "버그", "오류", "에러", "동작 안함", "왜 안되지", 에러 메시지/스택트레이스가 제공될 때 반드시 이 스킬을 활성화. 2-3가지 해결 옵션 제시 후 구현.
+user-invocable: true
+allowed-tools: Read, Grep, Glob, Bash, Edit
 metadata:
   version: "1.0.0"
 ---

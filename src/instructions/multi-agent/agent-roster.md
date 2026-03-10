@@ -201,7 +201,43 @@ Task(
 └── git-operator.md         # Git 커밋/PR 관리
 ```
 
-> 문서 작성은 `docs-creator` 스킬, 리팩토링은 `refactor` 스킬 사용
+> 스킬은 에이전트보다 상위 워크플로우. 상황에 맞는 스킬을 먼저 확인 후 내부에서 에이전트 조합.
+
+---
+
+## 스킬 카탈로그
+
+| 스킬 | 트리거 | 에이전트 조합 |
+|------|--------|--------------|
+| **commit-helper** | "커밋 메시지" | git-operator |
+| **code-quality** | "린트", "포맷", "타입체크" | lint-fixer |
+| **bug-fix** | "버그", "오류", "에러" | explore → implementation-executor |
+| **refactor** | "리팩토링", "구조 개선" | explore → Plan → implementation-executor |
+| **docs-creator** | "문서 작성", "CLAUDE.md" | explore |
+| **agents-generator** | "루트 지시문 생성" | explore |
+| **component-creator** | "컴포넌트 만들어", "페이지 추가" | explore → implementation-executor |
+| **test-generator** | "테스트 작성", "커버리지" | explore |
+| **pr-review-responder** | "리뷰 반영", PR 번호 | explore → implementation-executor |
+| **migration-helper** | "업그레이드", "마이그레이션" | explore → Plan → implementation-executor |
+
+### 스킬 연결 흐름
+
+```
+component-creator (컴포넌트 생성)
+  └→ test-generator (생성한 컴포넌트 테스트 작성)
+
+bug-fix (버그 수정)
+  └→ test-generator (수정 후 회귀 방지 테스트)
+
+refactor (리팩토링)
+  └→ test-generator (정책 보호 테스트)
+
+/done (작업 완료)
+  └→ PR 생성 후 pr-review-responder (리뷰 대응)
+
+migration-helper (라이브러리 업그레이드)
+  └→ test-generator (마이그레이션 검증 테스트)
+```
 
 ---
 
