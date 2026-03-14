@@ -18,17 +18,62 @@ set -euo pipefail
 
 REMOTE_REPO="https://github.com/yesroad/ai-rules-kit.git"
 AI_KIT_CACHE="$HOME/.config/ai-rules-kit"
+AI_KIT_DEFAULT_BRANCH="${AI_KIT_DEFAULT_BRANCH:-main}"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+resolve_script_dir() {
+  local script_source="${BASH_SOURCE[0]-${0-}}"
+
+  case "$script_source" in
+    ""|bash|-bash|sh|-sh)
+      pwd
+      return
+      ;;
+  esac
+
+  if [[ "$script_source" == /* ]]; then
+    cd "$(dirname "$script_source")" && pwd
+    return
+  fi
+
+  if [[ -e "$script_source" ]]; then
+    cd "$(dirname "$script_source")" && pwd
+    return
+  fi
+
+  pwd
+}
+
+refresh_cached_repo() {
+  local backup=""
+
+  if [[ ! -d "$AI_KIT_CACHE/.git" ]]; then
+    if [[ -e "$AI_KIT_CACHE" ]]; then
+      backup="${AI_KIT_CACHE}.bak.$(date +%Y%m%d%H%M%S)"
+      mv "$AI_KIT_CACHE" "$backup"
+      echo "기존 캐시를 백업했습니다: $backup"
+    fi
+
+    git clone --depth=1 --branch "$AI_KIT_DEFAULT_BRANCH" "$REMOTE_REPO" "$AI_KIT_CACHE"
+    return
+  fi
+
+  if git -C "$AI_KIT_CACHE" fetch --depth=1 origin "$AI_KIT_DEFAULT_BRANCH" > /dev/null 2>&1 && \
+     git -C "$AI_KIT_CACHE" merge --ff-only FETCH_HEAD > /dev/null 2>&1; then
+    return
+  fi
+
+  backup="${AI_KIT_CACHE}.bak.$(date +%Y%m%d%H%M%S)"
+  mv "$AI_KIT_CACHE" "$backup"
+  echo "캐시 브랜치가 분기되어 새로 다운로드합니다. 이전 캐시 백업: $backup"
+  git clone --depth=1 --branch "$AI_KIT_DEFAULT_BRANCH" "$REMOTE_REPO" "$AI_KIT_CACHE"
+}
+
+SCRIPT_DIR="$(resolve_script_dir)"
 
 # curl | bash로 실행된 경우 src/가 없음 → 레포를 캐시에 clone 후 재실행
 if [[ ! -d "$SCRIPT_DIR/src" ]]; then
   echo "ai-rules-kit 소스를 다운로드합니다..."
-  if [[ ! -d "$AI_KIT_CACHE" ]]; then
-    git clone --depth=1 "$REMOTE_REPO" "$AI_KIT_CACHE"
-  else
-    git -C "$AI_KIT_CACHE" pull --quiet
-  fi
+  refresh_cached_repo
   exec "$AI_KIT_CACHE/install.sh" "$@"
 fi
 
