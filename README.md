@@ -11,7 +11,7 @@
 | Claude Code | `--claude`   | `.claude/`                                         |
 | Cursor      | `--cursor`   | `.cursor/` + `.agents/skills/`                     |
 | OpenCode    | `--opencode` | `.opencode/` + `AGENTS.md`                         |
-| Codex       | `--codex`    | `.codex/` + `.agents/skills/` + `.codex/AGENTS.md` |
+| Codex       | `--codex`    | `src/` 마이그레이션 후 `.codex/` + `.agents/skills/` + `.codex/AGENTS.md` |
 
 ---
 
@@ -61,7 +61,7 @@ cd ai-rules-kit
 ./install.sh --all /path/to/your-project
 ```
 
-설치 시 툴별로 필요한 파일만 복사됩니다. Cursor, Codex는 스킬을 `.agents/skills/`에 따로 설치하고, OpenCode, Codex는 `AGENTS.md`가 함께 생성되어 어떤 파일을 언제 참조할지 안내합니다.
+설치 시 툴별로 필요한 파일만 복사됩니다. Cursor, Codex는 스킬을 `.agents/skills/`에 따로 설치하고, OpenCode, Codex는 `AGENTS.md`가 함께 생성되어 어떤 파일을 언제 참조할지 안내합니다. Codex는 설치 전에 `src/`의 Claude 전용 문법을 `.build/codex-src/`로 마이그레이션한 뒤 설치합니다.
 
 ---
 
@@ -136,7 +136,23 @@ src/
 > **agents/ 변환 내용**
 >
 > - OpenCode: `tools:`, `model:`, `@../` 라인 제거 (파싱 에러 방지)
-> - Codex: `tools:`, `model:` 라인 제거
+> - Codex: `Task(...)`, `.claude/...`, `tools:`, `model:`, `allowed-tools:` 등 Claude 전용 표현을 Codex용 문서로 마이그레이션
+
+---
+
+## Codex 개발 흐름
+
+Codex 설치는 루트 `install.sh`가 아래 내부 파이프라인을 호출합니다.
+
+```bash
+scripts/codex/build.sh
+scripts/codex/verify.sh
+scripts/codex/install.sh /path/to/your-project
+```
+
+- `build.sh`: `src/`를 `.build/codex-src/`로 변환
+- `verify.sh`: Claude 전용 패턴 잔존 여부 검사
+- `install.sh`: 검증된 산출물을 `.codex/`와 `.agents/skills/`로 설치
 
 ---
 

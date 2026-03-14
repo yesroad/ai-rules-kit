@@ -7,7 +7,7 @@
 #   --claude   src/ 전체 복사                         → .claude/
 #   --cursor   src/ 복사 (skills 제외) + .agents/skills/ → .cursor/ + .agents/
 #   --opencode src/ 전체 복사 + AGENTS.md             → .opencode/
-#   --codex    src/ 복사 (skills 제외) + .agents/skills/ + AGENTS.md → .codex/ + .agents/
+#   --codex    src/ 마이그레이션 후 설치              → .build/codex-src/ → .codex/ + .agents/
 #   --all      위 4개 모두
 #
 # 원격 실행 (curl | bash):
@@ -37,6 +37,7 @@ RULES_DIR="$SRC_DIR/rules/core"
 AGENTS_DIR="$SRC_DIR/agents"
 SKILLS_DIR="$SRC_DIR/skills"
 COMMANDS_DIR="$SRC_DIR/commands"
+CODEX_SCRIPTS_DIR="$SCRIPT_DIR/scripts/codex"
 
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -57,7 +58,7 @@ usage() {
   echo "  --claude    src/ 전체 복사 (Claude Code)"
   echo "  --cursor    src/ 복사 (plugins/, skills/, settings 제외) + .agents/skills/ (Cursor)"
   echo "  --opencode  src/ 전체 복사 (hooks/, settings 제외) + AGENTS.md (OpenCode)"
-  echo "  --codex     src/ 복사 (plugins/, skills/, settings 제외) + .agents/skills/ + AGENTS.md (Codex)"
+  echo "  --codex     src/ 마이그레이션 후 설치 + .agents/skills/ + .codex/AGENTS.md (Codex)"
   echo "  --all       위 4개 모두"
   echo ""
   echo "target-dir: 설치 경로 (기본값: 현재 디렉토리)"
@@ -329,27 +330,24 @@ install_codex() {
   local target="$1"
   echo -e "${BLUE}▶ Codex${NC}"
 
-  mkdir -p "$target/.codex"
-  rsync -a \
-    --exclude='plugins' \
-    --exclude='skills' \
-    --exclude='settings.json' \
-    --exclude='settings.local.json' \
-    --exclude='.DS_Store' \
-    "$SRC_DIR/" "$target/.codex/" > /dev/null
-  rm -f "$target/.codex/settings.json" "$target/.codex/settings.local.json"
-  echo -e "  ${GREEN}✓${NC} ${DIM}src/${NC} (plugins/, skills/, settings 제외)"
+  [[ -x "$CODEX_SCRIPTS_DIR/build.sh" ]] || {
+    echo -e "${RED}오류: Codex 빌드 스크립트 없음 → $CODEX_SCRIPTS_DIR/build.sh${NC}"
+    exit 1
+  }
+  [[ -x "$CODEX_SCRIPTS_DIR/verify.sh" ]] || {
+    echo -e "${RED}오류: Codex 검증 스크립트 없음 → $CODEX_SCRIPTS_DIR/verify.sh${NC}"
+    exit 1
+  }
+  [[ -x "$CODEX_SCRIPTS_DIR/install.sh" ]] || {
+    echo -e "${RED}오류: Codex 설치 스크립트 없음 → $CODEX_SCRIPTS_DIR/install.sh${NC}"
+    exit 1
+  }
 
-  mkdir -p "$target/.agents/skills"
-  rsync -a --exclude='.DS_Store' "$SKILLS_DIR/" "$target/.agents/skills/" > /dev/null
-  echo -e "  ${GREEN}✓${NC} .agents/skills/ 복사"
+  "$CODEX_SCRIPTS_DIR/build.sh"
+  "$CODEX_SCRIPTS_DIR/verify.sh"
+  "$CODEX_SCRIPTS_DIR/install.sh" "$target"
 
-  strip_agent_fields "$target/.codex"
-  echo -e "  ${GREEN}✓${NC} agents/ 필드 변환 (tools/model 제거)"
-
-  create_agents_md "$target" "$target/.codex/AGENTS.md" ".codex" ".agents/skills"
-
-  echo -e "  ${GREEN}✓${NC} Codex 복사 완료"
+  echo -e "  ${GREEN}✓${NC} Codex 설치 완료"
 }
 
 # ────────────────────────────────────────

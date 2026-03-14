@@ -5,6 +5,7 @@ src/settings.local.json
 # 임시 작업 파일
 .claude/temp/
 src/temp/
+.build/
 
 # 대화 간 지속 메모 (프로젝트별 내용 포함 가능)
 .claude/memory/
