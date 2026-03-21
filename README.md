@@ -141,9 +141,7 @@ claude_kit/
 ├── hooks/
 │   └── notify.sh               # macOS 알림 훅
 │
-├── plugins/
-│   └── notify.js               # 알림 플러그인
-│
+
 ├── .mcp.json                   # MCP 서버 설정 템플릿
 └── .claude-plugin/
     ├── plugin.json             # 플러그인 메타데이터

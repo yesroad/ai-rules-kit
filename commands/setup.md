@@ -104,13 +104,11 @@ mkdir -p .claude/instructions/validation
 mkdir -p .claude/instructions/workflow-patterns
 mkdir -p .claude/hooks
 mkdir -p .claude/scripts
-mkdir -p .claude/plugins
 
 [ -d "$PLUGIN_ROOT/rules" ]        && cp -r "$PLUGIN_ROOT/rules/"        .claude/rules/
 [ -d "$PLUGIN_ROOT/instructions" ] && cp -r "$PLUGIN_ROOT/instructions/" .claude/instructions/
 [ -f "$PLUGIN_ROOT/hooks/notify.sh" ] && cp "$PLUGIN_ROOT/hooks/notify.sh" .claude/hooks/notify.sh && chmod +x .claude/hooks/notify.sh
 [ -d "$PLUGIN_ROOT/scripts" ]      && cp -r "$PLUGIN_ROOT/scripts/"      .claude/scripts/
-[ -f "$PLUGIN_ROOT/plugins/notify.js" ] && cp "$PLUGIN_ROOT/plugins/notify.js" .claude/plugins/notify.js
 
 # .mcp.json: Q6 선택 서버만 추가 (없으면 새로 생성, 있으면 선택 항목만 머지)
 # SELECTED_MCP: Q6 답변 기반으로 Claude가 설정 — 쉼표 구분 서버 키 목록
