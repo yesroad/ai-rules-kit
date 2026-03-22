@@ -1,4 +1,4 @@
-# claude-kit 파일 맵
+# cc-kit 파일 맵
 
 > 전체 파일 설명서 — 버전 1.0.1 (2026-03-22 기준)
 >
@@ -29,7 +29,7 @@
 | `CLAUDE.md` | ~25 | **플러그인 개발용 루트 지시문**. `thinking-model.md`, `required-behaviors.md`, `forbidden-patterns.md`를 `<instructions>`로 로드. 플러그인 개발 시 참조 진입점. |
 | `README.md` | ~200 | **플러그인 사용 설명서**. 설치 방법, 인터뷰 항목, 커맨드/스킬 목록, 디렉토리 구조, MCP 서버 템플릿, 개발 사이클 설명. |
 | `CHANGELOG.md` | ~43 | **변경 이력**. Semantic Versioning 기반. 1.0.0 초기 릴리스, 1.0.1 정합성 보정/크로스 플랫폼/Vue 지원. |
-| `.mcp.json` | ~38 | **MCP 서버 설정 템플릿**. Atlassian(Jira/Confluence), Figma, Supabase, Playwright 연동 설정. `/setup` Q6에서 선택한 서버만 설치됨. |
+| `.mcp.json` | ~43 | **MCP 서버 설정 템플릿**. Atlassian(Jira/Confluence), Figma, Supabase, Playwright, shadcn(/ui 컴포넌트 검색) 연동 설정. `/setup` Q6에서 선택한 서버만 설치됨. |
 | `.gitignore` | ~21 | `settings.local.json`, `temp/`, `memory/` 등 로컬 전용 파일 제외. |
 
 ---
@@ -207,8 +207,8 @@
 
 | 파일 | 줄 수 | 설명 |
 |------|:-----:|------|
-| `plugin.json` | ~12 | **플러그인 메타데이터**. name: `claude-kit`, version: `1.0.1`, author: `yesroad`, license: MIT. |
-| `marketplace.json` | ~24 | **마켓플레이스 등록 정보**. `yesroad` 마켓플레이스에 `claude-kit` 등록. 설치 명령: `/plugin install claude-kit@yesroad`. |
+| `plugin.json` | ~12 | **플러그인 메타데이터**. name: `cc-kit`, version: `1.0.1`, author: `yesroad`, license: MIT. |
+| `marketplace.json` | ~24 | **마켓플레이스 등록 정보**. `yesroad` 마켓플레이스에 `cc-kit` 등록. 설치 명령: `/plugin install cc-kit@yesroad`. |
 
 ---
 

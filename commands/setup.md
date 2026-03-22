@@ -1,9 +1,9 @@
 ---
 name: setup
-description: claude-kit을 현재 프로젝트에 설치합니다. 프로젝트 기술 스택을 입력받아 맞춤형 CLAUDE.md와 .claude/ 설정을 생성합니다.
+description: cc-kit을 현재 프로젝트에 설치합니다. 프로젝트 기술 스택을 입력받아 맞춤형 CLAUDE.md와 .claude/ 설정을 생성합니다.
 ---
 
-현재 프로젝트에 claude-kit을 설치합니다.
+현재 프로젝트에 cc-kit을 설치합니다.
 
 ## 1단계: 프로젝트 기술 스택 인터뷰
 
@@ -55,13 +55,14 @@ description: claude-kit을 현재 프로젝트에 설치합니다. 프로젝트 
 
 **Q6. MCP 서버** (복수 선택 가능)
 
-| 번호 | 서버 | 용도 |
-|------|------|------|
-| 1 | Figma | 피그마 디자인 파일 읽기 (API 키 필요) |
-| 2 | Supabase | DB 쿼리, 마이그레이션, Edge Function (API 키 필요) |
-| 3 | Playwright | 브라우저 자동화, E2E 테스트 (설정 불필요) |
-| 4 | Atlassian | Jira·Confluence 연동 (API 키 필요) |
-| 5 | 없음 | |
+| 번호 | 서버       | 용도                                               |
+| ---- | ---------- | -------------------------------------------------- |
+| 1    | Figma      | 피그마 디자인 파일 읽기 (API 키 필요)              |
+| 2    | Supabase   | DB 쿼리, 마이그레이션, Edge Function (API 키 필요) |
+| 3    | Playwright | 브라우저 자동화, E2E 테스트 (설정 불필요)          |
+| 4    | Atlassian  | Jira·Confluence 연동 (API 키 필요)                 |
+| 5    | shadcn     | shadcn/ui 컴포넌트 검색 및 설치 (설정 불필요)      |
+| 6    | 없음       |                                                    |
 
 예시: "1 3" → Figma + Playwright 설치
 
@@ -73,14 +74,15 @@ description: claude-kit을 현재 프로젝트에 설치합니다. 프로젝트 
 
 Q6 답변을 기반으로 스크립트 실행 전에 `SELECTED_MCP` 변수를 설정합니다:
 
-| Q6 선택 | SELECTED_MCP 값 |
-|---------|----------------|
-| 1 (Figma) | `Figma` |
-| 2 (Supabase) | `supabase` |
-| 3 (Playwright) | `playwright` |
-| 4 (Atlassian) | `Atlassian` |
-| 복수 선택 "1 3" | `Figma,playwright` |
-| 5 또는 엔터 | (빈 문자열, 설치 안 함) |
+| Q6 선택         | SELECTED_MCP 값         |
+| --------------- | ----------------------- |
+| 1 (Figma)       | `Figma`                 |
+| 2 (Supabase)    | `supabase`              |
+| 3 (Playwright)  | `playwright`            |
+| 4 (Atlassian)   | `Atlassian`             |
+| 5 (shadcn)      | `shadcn`                |
+| 복수 선택 "1 3" | `Figma,playwright`      |
+| 6 또는 엔터     | (빈 문자열, 설치 안 함) |
 
 ```bash
 #!/bin/bash
@@ -91,13 +93,13 @@ command -v python3 >/dev/null 2>&1 || { echo "❌ python3가 필요합니다. (M
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-}"
 
 if [ -z "$PLUGIN_ROOT" ] || [ ! -d "$PLUGIN_ROOT" ]; then
-  PLUGIN_ROOT="$HOME/.claude/plugins/cache/claude-kit"
+  PLUGIN_ROOT="$HOME/.claude/plugins/cache/cc-kit"
 fi
 
 if [ ! -d "$PLUGIN_ROOT" ]; then
-  echo "GitHub에서 claude-kit을 가져옵니다..."
-  git clone --depth 1 https://github.com/yesroad/claude-kit.git /tmp/claude-kit_install
-  PLUGIN_ROOT="/tmp/claude-kit_install"
+  echo "GitHub에서 cc-kit을 가져옵니다..."
+  git clone --depth 1 https://github.com/yesroad/cc-kit.git /tmp/cc-kit_install
+  PLUGIN_ROOT="/tmp/cc-kit_install"
 fi
 
 mkdir -p .claude
@@ -157,7 +159,7 @@ else:
 PYEOF
 fi
 
-[ "$PLUGIN_ROOT" = "/tmp/claude-kit_install" ] && rm -rf /tmp/claude-kit_install
+[ "$PLUGIN_ROOT" = "/tmp/cc-kit_install" ] && rm -rf /tmp/cc-kit_install
 
 # .mcp.json 보안 안내
 if [ -f ".mcp.json" ]; then
@@ -201,7 +203,7 @@ echo "✅ .claude/ 설치 완료"
 
 ## 5단계: 알림 설정
 
-`/claude-kit:setup-notifier`를 실행합니다.
+`/setup-notifier`를 실행합니다.
 
 ## 6단계: CLAUDE.md 생성
 
@@ -210,6 +212,7 @@ echo "✅ .claude/ 설치 완료"
 호출 시 아래 컨텍스트를 함께 전달합니다:
 
 **기술 스택 (인터뷰 답변 요약):**
+
 - 프레임워크: {Q1 답변} ({Q2 답변, Next.js인 경우})
 - 스타일링: {Q3 답변}
 - 서버 상태: {Q4 답변}
@@ -217,38 +220,38 @@ echo "✅ .claude/ 설치 완료"
 
 **포함할 @참조 (결정표 기반):**
 
-| rules 파일 | 포함 조건 |
-|------------|----------|
-| `thinking-model.md` | 항상 |
-| `required-behaviors.md` | 항상 |
-| `forbidden-patterns.md` | 항상 |
-| `unit-test-conventions.md` | 항상 |
-| `pr-guide.md` | 항상 |
-| `policy-definitions.md` | 항상 |
-| `coding-standards.md` | Q1 = Next.js 또는 React |
-| `react-nextjs-conventions.md` | Q1 = Next.js 또는 React |
-| `react-hooks-patterns.md` | Q1 = Next.js 또는 React |
-| `nextjs-app-router.md` | Q1 = Next.js **AND** Q2 = App Router |
-| `state-and-server-state.md` | Q4 = TanStack Query 또는 SWR |
-| `accessibility.md` | Q1 = 프론트엔드 (Vue 포함) |
-| `vue-conventions.md` | Q1 = Vue |
+| rules 파일                    | 포함 조건                            |
+| ----------------------------- | ------------------------------------ |
+| `thinking-model.md`           | 항상                                 |
+| `required-behaviors.md`       | 항상                                 |
+| `forbidden-patterns.md`       | 항상                                 |
+| `unit-test-conventions.md`    | 항상                                 |
+| `pr-guide.md`                 | 항상                                 |
+| `policy-definitions.md`       | 항상                                 |
+| `coding-standards.md`         | Q1 = Next.js 또는 React              |
+| `react-nextjs-conventions.md` | Q1 = Next.js 또는 React              |
+| `react-hooks-patterns.md`     | Q1 = Next.js 또는 React              |
+| `nextjs-app-router.md`        | Q1 = Next.js **AND** Q2 = App Router |
+| `state-and-server-state.md`   | Q4 = TanStack Query 또는 SWR         |
+| `accessibility.md`            | Q1 = 프론트엔드 (Vue 포함)           |
+| `vue-conventions.md`          | Q1 = Vue                             |
 
 > **Q1 = 기타**: `thinking-model.md`, `required-behaviors.md`, `forbidden-patterns.md`, `unit-test-conventions.md`, `pr-guide.md`, `policy-definitions.md`만 포함. 프론트엔드 전용 rules (`coding-standards.md`, `react-*`, `nextjs-*`, `state-*`, `accessibility.md`)는 제외.
 
 **포함할 스킬 quick_ref (결정표 기반):**
 
-| 스킬 | 포함 조건 |
-|------|----------|
-| `commit-helper` | 항상 |
-| `pr-review-responder` | 항상 |
-| `code-quality` | 항상 |
-| `refactor` | 항상 |
-| `bug-fix` | 항상 |
-| `migration-helper` | 항상 |
-| `test-generator` | 항상 |
-| `next-project-structure` | Q1 = Next.js |
-| `component-creator` | Q1 = Next.js 또는 React |
-| `web-design` | Q1 = Next.js 또는 React **AND** Q3 = TailwindCSS |
+| 스킬                     | 포함 조건                                        |
+| ------------------------ | ------------------------------------------------ |
+| `commit-helper`          | 항상                                             |
+| `pr-review-responder`    | 항상                                             |
+| `code-quality`           | 항상                                             |
+| `refactor`               | 항상                                             |
+| `bug-fix`                | 항상                                             |
+| `migration-helper`       | 항상                                             |
+| `test-generator`         | 항상                                             |
+| `next-project-structure` | Q1 = Next.js                                     |
+| `component-creator`      | Q1 = Next.js 또는 React                          |
+| `web-design`             | Q1 = Next.js 또는 React **AND** Q3 = TailwindCSS |
 
 agents-generator가 생성한 CLAUDE.md에 `<quick_ref>` 섹션이 없으면 아래 결정표에 따라 추가합니다.
 
@@ -258,9 +261,9 @@ agents-generator가 생성한 CLAUDE.md에 `<quick_ref>` 섹션이 없으면 아
 <quick_ref>
 | 상황 | 커맨드/스킬 |
 |------|------------|
-| 작업 시작 | /claude-kit:start |
-| 작업 완료+PR | /claude-kit:done |
-| 커밋 | /claude-kit:commit |
+| 작업 시작 | /start |
+| 작업 완료+PR | /done |
+| 커밋 | /commit |
 | UI 구현 | web-design 스킬 |
 | 컴포넌트 생성 | component-creator 스킬 |
 | 도메인 스캐폴딩 | next-project-structure 스킬 |
@@ -278,9 +281,9 @@ agents-generator가 생성한 CLAUDE.md에 `<quick_ref>` 섹션이 없으면 아
 <quick_ref>
 | 상황 | 커맨드/스킬 |
 |------|------------|
-| 작업 시작 | /claude-kit:start |
-| 작업 완료+PR | /claude-kit:done |
-| 커밋 | /claude-kit:commit |
+| 작업 시작 | /start |
+| 작업 완료+PR | /done |
+| 커밋 | /commit |
 | 컴포넌트 생성 | component-creator 스킬 |
 | 버그 수정 | bug-fix 스킬 |
 | 리팩토링 | refactor 스킬 |
@@ -296,9 +299,9 @@ agents-generator가 생성한 CLAUDE.md에 `<quick_ref>` 섹션이 없으면 아
 <quick_ref>
 | 상황 | 커맨드/스킬 |
 |------|------------|
-| 작업 시작 | /claude-kit:start |
-| 작업 완료+PR | /claude-kit:done |
-| 커밋 | /claude-kit:commit |
+| 작업 시작 | /start |
+| 작업 완료+PR | /done |
+| 커밋 | /commit |
 | 버그 수정 | bug-fix 스킬 |
 | 리팩토링 | refactor 스킬 |
 | 테스트 | test-generator 스킬 |

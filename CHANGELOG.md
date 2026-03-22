@@ -4,6 +4,19 @@
 
 ---
 
+## [1.0.2] - 2026-03-22
+
+### 변경
+
+- 프로젝트명 `claude-kit` → `cc-kit` 전체 리네임
+
+### 추가
+
+- `.mcp.json` shadcn MCP 서버 추가 (`npx shadcn@latest mcp`, API 키 불필요)
+- `setup.md` Q6 인터뷰에 shadcn 옵션 추가 (번호 5, SELECTED_MCP 키: `shadcn`)
+
+---
+
 ## [1.0.1] - 2026-03-21
 
 ### 수정

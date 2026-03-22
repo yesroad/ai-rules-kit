@@ -1,4 +1,4 @@
-# claude-kit
+# cc-kit
 
 Claude Code 확장 플러그인 — rules, agents, skills, commands를 포함한 AI 코딩 워크플로우 키트.
 
@@ -9,7 +9,7 @@ Claude Code 확장 플러그인 — rules, agents, skills, commands를 포함한
 ### 1. 레포 클론
 
 ```bash
-git clone https://github.com/yesroad/claude-kit
+git clone https://github.com/yesroad/cc-kit
 ```
 
 ### 2. 프로젝트에 복사
@@ -17,7 +17,7 @@ git clone https://github.com/yesroad/claude-kit
 적용할 프로젝트 루트에서 실행합니다:
 
 ```bash
-CLAUDE_KIT=/path/to/claude-kit
+CLAUDE_KIT=/path/to/cc-kit
 
 mkdir -p .claude
 cp -r $CLAUDE_KIT/rules      ./.claude/rules
@@ -50,7 +50,7 @@ Claude Code에서 실행합니다:
 | **Q3. 스타일링**   | TailwindCSS / Emotion / CSS Modules / 기타                   |
 | **Q4. 서버 상태**  | TanStack Query / SWR / 없음                                  |
 | **Q5. 전역 상태**  | Jotai / Zustand / Redux Toolkit / 없음                       |
-| **Q6. MCP 서버**   | Figma / Supabase / Playwright / Atlassian / 없음 (복수 선택) |
+| **Q6. MCP 서버**   | Figma / Supabase / Playwright / Atlassian / shadcn / 없음 (복수 선택) |
 
 ---
 
@@ -103,7 +103,7 @@ brew install gh && gh auth login
 ## 디렉토리 구조
 
 ```
-claude-kit/
+cc-kit/
 ├── rules/core/                 # 코딩 규칙
 │   ├── thinking-model.md           # 통합 사고 모델 (READ→REACT→ANALYZE→...)
 │   ├── coding-standards.md         # TypeScript 표준, 에러 처리, React 패턴
@@ -177,6 +177,7 @@ claude-kit/
 | Supabase   | DB 쿼리, 마이그레이션, Edge Function |     ✅      |
 | Playwright | 브라우저 자동화, E2E 테스트          |     ❌      |
 | Atlassian  | Jira·Confluence 연동                 |     ✅      |
+| shadcn     | shadcn/ui 컴포넌트 검색 및 설치      |     ❌      |
 
 ---
 
