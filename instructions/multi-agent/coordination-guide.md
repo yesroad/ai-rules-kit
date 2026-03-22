@@ -337,12 +337,13 @@ Task(subagent_type='general-purpose', model='opus',
 `);
 ```
 
-**버그 수정:**
+**버그 수정 (복잡도별 모델 분기):**
 
 ```
-Task(subagent_type='general-purpose', model='sonnet',
+// LOW 버그 (단일 파일, 명확한 원인): haiku
+Task(subagent_type='general-purpose', model='haiku',
   prompt=`
-  ## 역할: 버그 수정 담당
+  ## 역할: 버그 수정 담당 (단순)
 
   ### 사전 준비 (필수)
   1. .claude/skills/bug-fix/SKILL.md를 읽고 분석 → 옵션 → 수정 흐름 숙지
@@ -350,6 +351,14 @@ Task(subagent_type='general-purpose', model='sonnet',
   ### 작업 내용
   {에러 증상, 발생 조건, 관련 파일}
 `);
+
+// MEDIUM 버그 (2-5파일, 연쇄 영향): sonnet
+Task(subagent_type='general-purpose', model='sonnet',
+  prompt=`...`);
+
+// HIGH 버그 (비즈니스 로직, 상태 전이, 다중 모듈): opus
+Task(subagent_type='general-purpose', model='opus',
+  prompt=`...`);
 ```
 
 ---
@@ -360,7 +369,7 @@ Task(subagent_type='general-purpose', model='sonnet',
 
 | 복잡도     | 모델   | 사용 케이스                     |
 | ---------- | ------ | ------------------------------- |
-| **LOW**    | haiku  | 파일 탐색, 단순 검색, 린트 수정 |
+| **LOW**    | haiku  | 파일 탐색, 단순 검색, 린트 수정, 커밋/브랜치 관리 |
 | **MEDIUM** | sonnet | 코드 리뷰, 테스트 생성, 구현    |
 | **HIGH**   | opus   | 아키텍처 설계, 복잡한 버그      |
 

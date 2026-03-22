@@ -2,7 +2,7 @@
 name: git-operator
 description: git 상태 확인, 스테이징, 커밋, 로그/브랜치 관리. 프로젝트 커밋 규칙 준수.
 tools: Read, Grep, Glob, Bash
-model: sonnet
+model: haiku
 ---
 
 @../instructions/validation/required-behaviors.md

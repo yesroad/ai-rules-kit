@@ -15,7 +15,7 @@
 | **lint-fixer**              | haiku     | ✅   | 린트/포맷 오류 수정           |
 | **Plan** (빌트인)           | opus      | ❌   | 아키텍처 설계, 구현 계획      |
 | **implementation-executor** | sonnet    | ⚠️   | 코드 구현, 수정               |
-| **git-operator**            | sonnet    | ❌   | Git 커밋/브랜치/PR 관리       |
+| **git-operator**            | haiku     | ❌   | Git 커밋/브랜치/PR 관리       |
 
 > 비즈니스 로직(날짜 계산, 상태 조건, 수치 계산 등) 포함 시 모델 상향 - `coordination-guide.md` 참조
 
@@ -134,6 +134,7 @@ Task(
 ```
 
 **⚠️ 병렬 제한**: 같은 파일 수정 시 순차 실행 필수
+**⚠️ 모델 상향**: 비즈니스 로직(날짜·계산·상태 전이) 포함 구현 시 `model = "opus"` 사용
 
 ---
 
