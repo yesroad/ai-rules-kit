@@ -20,9 +20,13 @@ Claude Code에서 실행합니다:
 /plugin install cc-kit@yesroad
 ```
 
-### 3. 프로젝트 설정
+### 3. Claude Code 재시작
 
-설치 완료 후 Claude Code에서 실행합니다:
+플러그인 적용을 위해 Claude Code를 껐다가 다시 시작합니다.
+
+### 4. 프로젝트 설정
+
+적용할 프로젝트 루트에서 Claude Code를 열고 실행합니다:
 
 ```
 /setup
