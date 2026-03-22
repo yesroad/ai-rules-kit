@@ -19,8 +19,7 @@ metadata:
 1. **신규 생성** — 대상 파일(CLAUDE.md 또는 AGENTS.md)이 없으면 자동 생성
 2. **자동 업데이트** — 기존 파일이 있으면 diff 분석 후 개선사항 적용
 3. **모노레포 지원** — 각 워크스페이스마다 중첩 지시문 파일 생성
-4. **프레임워크 감지** — Next.js, Vue, TypeScript/Node.js 패턴 자동 적용
-5. **규칙 연동** — Vue 프로젝트(`vue` 의존성 감지)면 `@.claude/rules/core/vue-conventions.md`를 `<instructions>`에 포함
+4. **프레임워크 감지** — Next.js, TypeScript/Node.js 패턴 자동 적용
 
 ## AGENTS.md에 무엇을 넣을지 판단 기준
 

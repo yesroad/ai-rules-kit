@@ -53,8 +53,7 @@ ls tailwind.config.* 2>/dev/null || true
 
 1. Next.js
 2. React (CRA / Vite)
-3. Vue
-4. 기타 (Node.js, Python, Go 등 — 프론트엔드 전용 rules 제외)
+3. 기타 (Node.js, Python, Go 등 — 프론트엔드 전용 rules 제외)
 
 ---
 
@@ -271,8 +270,7 @@ echo "✅ .claude/ 설치 완료"
 | `react-hooks-patterns.md`     | Q1 = Next.js 또는 React              |
 | `nextjs-app-router.md`        | Q1 = Next.js **AND** Q2 = App Router |
 | `state-and-server-state.md`   | Q4 = TanStack Query 또는 SWR         |
-| `accessibility.md`            | Q1 = 프론트엔드 (Vue 포함)           |
-| `vue-conventions.md`          | Q1 = Vue                             |
+| `accessibility.md`            | Q1 = Next.js 또는 React              |
 
 > **Q1 = 기타**: `thinking-model.md`, `required-behaviors.md`, `forbidden-patterns.md`, `unit-test-conventions.md`, `pr-guide.md`, `policy-definitions.md`만 포함. 프론트엔드 전용 rules (`coding-standards.md`, `react-*`, `nextjs-*`, `state-*`, `accessibility.md`)는 제외.
 
@@ -323,23 +321,6 @@ agents-generator가 생성한 CLAUDE.md에 `<quick_ref>` 섹션이 없으면 아
 | 작업 완료+PR | /done |
 | 커밋 | /commit |
 | 컴포넌트 생성 | component-creator 스킬 |
-| 버그 수정 | bug-fix 스킬 |
-| 리팩토링 | refactor 스킬 |
-| 테스트 | test-generator 스킬 |
-| 에이전트 선택 | @.claude/instructions/multi-agent/agent-roster.md |
-| 복잡도 판단 | @.claude/instructions/workflow-patterns/sequential-thinking.md |
-</quick_ref>
-```
-
-**예시: Q1=Vue인 경우** (`component-creator`, `web-design`, `next-project-structure` 모두 제외)
-
-```markdown
-<quick_ref>
-| 상황 | 커맨드/스킬 |
-|------|------------|
-| 작업 시작 | /start |
-| 작업 완료+PR | /done |
-| 커밋 | /commit |
 | 버그 수정 | bug-fix 스킬 |
 | 리팩토링 | refactor 스킬 |
 | 테스트 | test-generator 스킬 |

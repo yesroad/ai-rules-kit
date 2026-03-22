@@ -41,7 +41,7 @@ Claude Code에서 실행합니다:
 
 | 질문               | 선택지                                                       |
 | ------------------ | ------------------------------------------------------------ |
-| **Q1. 프레임워크** | Next.js / React / Vue / 기타                                 |
+| **Q1. 프레임워크** | Next.js / React / 기타                                       |
 | **Q2. 라우터**     | App Router / Pages Router (Next.js만)                        |
 | **Q3. 스타일링**   | TailwindCSS / Emotion / CSS Modules / 기타                   |
 | **Q4. 서버 상태**  | TanStack Query / SWR / 없음                                  |
@@ -110,8 +110,7 @@ cc-kit/
 │   ├── unit-test-conventions.md    # 순수 함수 유닛 테스트 규칙
 │   ├── accessibility.md            # WCAG 2.1 AA 접근성 규칙
 │   ├── pr-guide.md                 # PR 작성 가이드
-│   ├── policy-definitions.md       # 정책(Policy) 정의 기준
-│   └── vue-conventions.md          # Vue 3 + Composition API 컨벤션
+│   └── policy-definitions.md       # 정책(Policy) 정의 기준
 │
 ├── agents/                     # 전문화된 서브에이전트
 │   ├── explore.md                  # 코드베이스 탐색
