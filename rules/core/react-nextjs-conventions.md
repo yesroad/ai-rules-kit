@@ -51,6 +51,91 @@ const OrderCard = ({ order, onSelect }: OrderCardProps) => { ... };
 
 ---
 
+## HTTP 클라이언트 — Axios 인스턴스 패턴
+
+프로젝트에서 axios를 사용할 때는 컴포넌트에서 직접 호출하지 않고 인스턴스를 분리한다.
+
+### 기본 패턴
+
+```typescript
+// lib/axios.ts
+import axios from 'axios'
+
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+export default api
+```
+
+### 인터셉터 패턴 (토큰 자동 주입 + 에러 중앙 처리)
+
+```typescript
+// lib/axios.ts
+import axios from 'axios'
+
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 10000,
+})
+
+// 요청 인터셉터: 토큰 자동 주입
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// 응답 인터셉터: 에러 코드별 중앙 처리
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // 인증 만료 처리
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
+  }
+)
+
+export default api
+```
+
+### 사용 방법
+
+```typescript
+// services/api/order.ts — axios 인스턴스 사용
+import api from '@/lib/axios'
+import type { Order } from '@/types/api/order'
+
+export const orderService = {
+  getOrder: (id: string) =>
+    api.get<Order>(`/orders/${id}`).then(r => r.data),
+  createOrder: (body: CreateOrderDto) =>
+    api.post<Order>('/orders', body).then(r => r.data),
+}
+```
+
+**금지 패턴:**
+```typescript
+// ❌ 컴포넌트에서 axios 직접 호출
+import axios from 'axios'
+
+function OrderCard() {
+  useEffect(() => {
+    axios.get('https://api.example.com/orders')  // 인스턴스 없이 직접 호출
+  }, [])
+}
+```
+
+---
+
 ## 스타일링 (Emotion)
 
 ### 기본 규칙
@@ -85,18 +170,9 @@ import { Container, Header } from './styled';
 
 ### 필수: 유사 구현 탐색
 
-새로운 기능을 구현하기 전에 반드시 기존 코드에서 유사 패턴을 찾는다:
+새로운 기능을 구현하기 전에 반드시 기존 코드에서 유사 패턴을 찾는다.
 
-```bash
-# 유사 컴포넌트 검색
-rg "ComponentName" src/
-
-# 유사 훅 검색
-rg "useHookName" src/
-
-# 유사 타입 검색
-rg "TypeName" src/
-```
+> **상세 탐색 방법**: `@thinking-model.md` READ 단계, `@policy-definitions.md` 정책 탐색 명령어 참조
 
 ### 타입 재사용
 

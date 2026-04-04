@@ -93,6 +93,41 @@ useEffect(() => {
 
 ---
 
+## React Compiler 시대의 메모이제이션
+
+React Compiler(Next.js 15.3.1+)가 활성화된 프로젝트에서는 수동 메모이제이션이 불필요하거나 역효과를 낼 수 있다.
+
+### Compiler 활성화 프로젝트
+
+```typescript
+// ✅ 컴파일러가 자동 최적화 — 수동 useMemo/useCallback 불필요
+function ProductList({ items, onSelect }) {
+  const filtered = items.filter(item => item.active)  // 컴파일러가 메모이제이션
+  const handleClick = (id: string) => onSelect(id)    // 컴파일러가 최적화
+  return <List data={filtered} onClick={handleClick} />
+}
+
+// ⚠️ 수동 메모이제이션이 컴파일러와 충돌할 수 있음
+const filtered = useMemo(() => items.filter(...), [items])  // 중복 최적화
+```
+
+### Compiler 미활성화 프로젝트 (기존 방식 유지)
+
+Compiler를 사용하지 않는 프로젝트에서는 기존 `useMemo`/`useCallback` 패턴을 그대로 따른다. 이 파일 위 섹션들의 규칙이 적용된다.
+
+### 문제가 생기면 opt-out
+
+```typescript
+function ProblematicComponent() {
+  'use no memo'  // 이 컴포넌트만 컴파일러 제외
+  const value = useMemo(() => compute(), [dep])  // 수동 메모이제이션 복원
+}
+```
+
+> **판단 기준**: `next.config.ts`에 `experimental.reactCompiler: true`가 있으면 Compiler 활성화 프로젝트. 없으면 기존 패턴 유지.
+
+---
+
 ## 참조 문서
 
 | 문서 | 용도 |

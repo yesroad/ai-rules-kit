@@ -195,6 +195,144 @@ export async function POST(req: Request) {
 
 ---
 
+## `use cache` + PPR 전략 (Next.js 16+)
+
+컴포넌트 단위로 캐시 생명주기를 제어한다. 페이지 단위 SSR/SSG 구분 시대에서 컴포넌트 단위 캐시 전략으로 이동.
+
+```tsx
+// ✅ 컴포넌트 레벨 캐싱
+async function BlogPosts() {
+  'use cache'
+  cacheLife('hours')   // 1시간 캐시
+  cacheTag('posts')    // 태그 기반 무효화
+
+  const posts = await db.post.findMany()
+  return <PostList posts={posts} />
+}
+
+// ✅ 온디맨드 무효화 (Server Action에서)
+import { revalidateTag } from 'next/cache'
+
+export async function createPostAction(formData: FormData) {
+  'use server'
+  await db.post.create({ data: parsed.data })
+  revalidateTag('posts')  // 'posts' 태그 캐시 전체 무효화
+}
+```
+
+**cacheLife 프리셋:**
+| 프리셋 | 기간 | 용도 |
+|--------|------|------|
+| `'seconds'` | 0~1분 | 실시간성 필요 |
+| `'minutes'` | 1~10분 | 자주 변하는 데이터 |
+| `'hours'` | 1시간 | 일반 컨텐츠 |
+| `'days'` | 1일 | 정적에 가까운 데이터 |
+
+**PPR 렌더링 전략:**
+```tsx
+// 정적 shell + 동적 스트리밍 혼합
+export default function Page() {
+  return (
+    <>
+      <StaticHeader />  {/* 빌드 시 prerender */}
+      <CachedPosts />   {/* use cache — 정적 shell 포함 */}
+      <Suspense fallback={<Skeleton />}>
+        <UserPersonalized />  {/* 요청 시 스트리밍 */}
+      </Suspense>
+    </>
+  )
+}
+```
+
+---
+
+## useEffectEvent — Effect 의존성 버그 해결 (React 19.2+)
+
+Effect 내부에서 항상 최신 값을 참조해야 하지만, 의존성 배열에 포함하면 불필요한 재실행이 발생할 때 사용.
+
+```tsx
+import { useEffectEvent } from 'react'
+
+// ❌ 기존 방식: theme 변경마다 채팅방 재연결 버그
+useEffect(() => {
+  const conn = connect(roomId)
+  conn.on('connected', () => showNotification('연결됨', theme))
+  return () => conn.disconnect()
+}, [roomId, theme]) // theme 변경 시 불필요한 재연결
+
+// ✅ useEffectEvent: theme을 의존성에서 분리
+function ChatRoom({ roomId, theme }) {
+  const onConnected = useEffectEvent(() => {
+    showNotification('연결됨', theme) // 항상 최신 theme 참조
+  })
+
+  useEffect(() => {
+    const conn = connect(roomId)
+    conn.on('connected', onConnected)
+    return () => conn.disconnect()
+  }, [roomId]) // roomId만 의존성 ✅
+}
+```
+
+---
+
+## `<Activity />` — UI 상태 보존 (React 19.2+)
+
+탭, 모달 등을 숨길 때 상태(입력값, 스크롤 위치 등)를 보존한다. `hidden` 모드에서 effects는 언마운트되지만 상태는 유지.
+
+```tsx
+import { Activity } from 'react'
+
+function TabLayout({ activeTab }: { activeTab: string }) {
+  return (
+    <>
+      <Activity mode={activeTab === 'home' ? 'visible' : 'hidden'}>
+        <HomePage />
+      </Activity>
+      <Activity mode={activeTab === 'profile' ? 'visible' : 'hidden'}>
+        <ProfilePage /> {/* 탭 전환 시 입력값 등 상태 유지 */}
+      </Activity>
+    </>
+  )
+}
+```
+
+---
+
+## React Compiler — 점진적 도입 (Next.js 15.3.1+)
+
+수동 메모이제이션(`useMemo`, `useCallback`, `React.memo`)을 빌드 타임에 자동화. 단, 전체 코드베이스에 한 번에 적용하지 않는다.
+
+```ts
+// next.config.ts
+const nextConfig = {
+  experimental: {
+    reactCompiler: true,
+  },
+}
+```
+
+**점진적 도입 전략:**
+```tsx
+// 컴파일러 적용할 컴포넌트 (opt-in)
+function SafeComponent() {
+  'use memo'
+}
+
+// 문제가 생긴 컴포넌트 즉시 제외 (opt-out)
+function ProblematicComponent() {
+  'use no memo'
+}
+```
+
+**알려진 이슈 (2026.04 기준):**
+- `eslint-plugin-react-hooks`의 `exhaustive-deps`와 충돌 가능
+- `try/finally` 패턴 최적화 미지원
+- Rules of React 위반 코드가 있으면 무한 렌더 루프 발생 가능
+- 기존 프로젝트: ESLint로 Rules of React 위반 먼저 정리 후 도입 권장
+
+---
+
 ## 체크리스트
 
 App Router 코드 작성 시:
@@ -205,6 +343,9 @@ App Router 코드 작성 시:
 - [ ] RSC props에 불필요한 필드가 포함되지 않았는가?
 - [ ] 동일 요청 내 반복 호출은 React.cache()로 중복 제거했는가?
 - [ ] 로깅/분석 등 사이드 이펙트는 after()로 분리했는가?
+- [ ] 캐시가 필요한 Server Component에 `use cache` + `cacheLife`/`cacheTag`를 적용했는가?
+- [ ] `useEffectEvent`로 해결 가능한 Effect 의존성 버그가 없는가?
+- [ ] React Compiler 도입 시 문제 컴포넌트에 `"use no memo"`를 적용했는가?
 
 ---
 
