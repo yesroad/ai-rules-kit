@@ -48,40 +48,8 @@ metadata:
 
 ### Phase 1: 현황 분석
 
-**Agent Teams 모드:**
-
 ```typescript
-TeamCreate({
-  team_name: "refactor-team",
-  description: "리팩토링 분석 및 실행",
-});
-Task(
-  (subagent_type = "explore"),
-  (team_name = "refactor-team"),
-  (name = "code-analyzer"),
-  (model = "haiku"),
-  (prompt = "리팩토링 대상 코드 분석"),
-);
-Task(
-  (subagent_type = "explore"),
-  (team_name = "refactor-team"),
-  (name = "test-checker"),
-  (model = "haiku"),
-  (prompt = "관련 테스트 현황 파악"),
-);
-Task(
-  (subagent_type = "explore"),
-  (team_name = "refactor-team"),
-  (name = "dep-analyzer"),
-  (model = "haiku"),
-  (prompt = "의존성 파일 목록 추출"),
-);
-// 완료 후 → shutdown_request → TeamDelete
-```
-
-**Task 병렬 모드 (폴백):**
-
-```typescript
+// Phase 1: 병렬 탐색
 Task(
   (subagent_type = "explore"),
   (model = "haiku"),
@@ -167,7 +135,8 @@ Task(
 // 정책 함수에 대한 테스트
 describe("리팩토링 전 정책 캡처", () => {
   beforeAll(() => {
-    jest.useFakeTimers().setSystemTime(new Date("2025-01-15"));
+    // Vitest: vi.useFakeTimers() / Jest: jest.useFakeTimers()
+    {테스트러너}.useFakeTimers().setSystemTime(new Date("2025-01-15"));
   });
 
   // 현재 동작을 "캡처"
@@ -227,7 +196,7 @@ Task(
   (model = "haiku"),
   (prompt = "린트 오류 수정"),
 );
-Task((subagent_type = "code-reviewer"), (prompt = "리팩토링 결과 리뷰"));
+Task((subagent_type = "code-reviewer"), (model = "sonnet"), (prompt = "리팩토링 결과 리뷰"));
 ```
 
 **최종 체크:**

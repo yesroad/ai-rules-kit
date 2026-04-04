@@ -226,38 +226,26 @@ Bash("{패키지매니저} build");
 
 ## 병렬 실행 패턴
 
-### Agent Teams 우선 원칙
-
-- Agent Teams 가용 시 TeamCreate로 팀 구성 → 병렬 협업
-- 미가용 시 Task 병렬 호출로 폴백
 - 같은 파일 동시 수정은 금지 (충돌 위험)
 
-### Agent Teams 모드
+### Task 병렬 모드 (HIGH 복잡도)
 
-복잡한 버그 (HIGH) 분석 시 팀 기반 병렬 협업:
+HIGH 복잡도 버그 분석 시 병렬 탐색:
 
 ```typescript
-TeamCreate({ team_name: "bugfix-team", description: "버그 분석 및 수정" });
 Task(
   (subagent_type = "explore"),
-  (team_name = "bugfix-team"),
-  (name = "root-cause"),
   (model = "sonnet"),
   (prompt = "근본 원인 분석"),
 );
 Task(
   (subagent_type = "explore"),
-  (team_name = "bugfix-team"),
-  (name = "impact-check"),
   (model = "haiku"),
   (prompt = "영향 범위 파악"),
 );
-// 완료 후 → shutdown_request → TeamDelete
 ```
 
-### Task 병렬 모드 (폴백)
-
-독립적인 버그 수정은 병렬로:
+독립적인 버그 수정도 병렬로:
 
 ```typescript
 Task(
