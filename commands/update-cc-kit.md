@@ -17,6 +17,7 @@ cc-kit 플러그인 파일을 최신 버전으로 업데이트합니다.
 | `instructions/` | |
 | `hooks/` | |
 | `scripts/` | |
+| `references/` | |
 
 ---
 
@@ -63,7 +64,7 @@ except:
 아래 디렉토리에 대해 파일 하나씩 비교한다:
 
 ```bash
-UPDATE_DIRS="rules instructions agents skills commands hooks scripts"
+UPDATE_DIRS="rules instructions agents skills commands hooks scripts references"
 ```
 
 각 파일에 대해:
