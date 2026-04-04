@@ -11,7 +11,8 @@
 | 에이전트                    | 기본 모델 | 병렬 | 페르소나             | 용도                          |
 | --------------------------- | --------- | ---- | -------------------- | ----------------------------- |
 | **explore**                 | haiku     | ✅   | 호기심 많은 탐정     | 코드베이스 탐색, 패턴 분석    |
-| **code-reviewer**           | sonnet    | ✅   | 건설적인 시니어      | 코드 리뷰, 품질 검증          |
+| **code-reviewer**           | sonnet    | ✅   | 건설적인 시니어      | git diff 기반 코드 리뷰, 보안/품질 검증 |
+| **nextjs-reviewer**         | sonnet    | ✅   | 레벨 진단 전문가     | Next.js 주니어/미들/시니어 레벨 진단 + 성장 피드백 |
 | **lint-fixer**              | haiku     | ✅   | 결벽증 정리왕        | 린트/포맷 오류 수정           |
 | **Plan** (빌트인)           | opus      | ❌   | —                    | 아키텍처 설계, 구현 계획      |
 | **implementation-executor** | sonnet    | ⚠️   | 과묵한 장인          | 코드 구현, 수정               |
@@ -77,6 +78,31 @@ Task(
 | Import 순서 | 외부 → 내부 패키지 → 상대경로 |
 | 상태 관리 경계 | 서버/전역/폼/로컬 분리 |
 | 타입 명시 | return type 필수 |
+
+---
+
+### nextjs-reviewer
+
+**목적**: Next.js 16 + React 19.2 코드 레벨 진단 (주니어/미들/시니어) + 성장 피드백
+
+```typescript
+Task(
+  (subagent_type = "nextjs-reviewer"),
+  (model = "sonnet"),
+  (prompt = `
+     대상: src/app/posts/page.tsx
+     요청: 이 파일의 레벨을 진단하고 시니어 패턴으로 개선할 포인트를 알려줘
+     `),
+);
+```
+
+**code-reviewer와 차이**:
+| 항목 | code-reviewer | nextjs-reviewer |
+|------|--------------|----------------|
+| 기준 | git diff | 파일 전체 |
+| 목적 | 버그/보안/규칙 차단 | 레벨 진단 + 성장 |
+| 출력 | 치명적/경고/제안 | 🟢🔵🔴 + 로드맵 |
+| 호출 시점 | PR 전 (`/done`) | 구현 후 (`/refactor`, `component-creator`) |
 
 ---
 
