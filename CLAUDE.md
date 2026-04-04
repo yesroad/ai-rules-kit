@@ -31,10 +31,10 @@ Claude Kit은 .claude/ 보일러플레이트 시스템 (코드 없음).
 
 이 레포는 동일한 파일이 두 곳에 존재한다:
 
-| 경로 | 역할 |
-|------|------|
-| `skills/`, `agents/`, `commands/`, `rules/`, `hooks/`, `instructions/`, `scripts/` | **배포 원본** (git 추적, 실제 소스) |
-| `.claude/skills/`, `.claude/agents/` 등 | **로컬 설치본** (gitignore, Claude Code가 실제 읽는 위치) |
+| 경로                                                                               | 역할                                                      |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `skills/`, `agents/`, `commands/`, `rules/`, `hooks/`, `instructions/`, `scripts/` | **배포 원본** (git 추적, 실제 소스)                       |
+| `.claude/skills/`, `.claude/agents/` 등                                            | **로컬 설치본** (gitignore, Claude Code가 실제 읽는 위치) |
 
 **파일을 생성하거나 수정할 때는 반드시 두 곳 모두 동일하게 적용한다.**
 
@@ -50,13 +50,13 @@ skills/web-design/SKILL.md          ← 항상 함께 수정
 
 스킬을 추가·수정·삭제할 때는 아래 문서를 함께 업데이트한다:
 
-| 문서 | 업데이트 내용 |
-|------|-------------|
-| `commands/setup.md` | 스킬 결정표, quick_ref 예시 |
-| `instructions/multi-agent/agent-roster.md` | 스킬 카탈로그, 연결 흐름 |
-| `README.md` | 스킬 목록 테이블, 디렉토리 구조 |
-| `FILE-MAP.md` | Skills 섹션, 흐름 다이어그램 |
-| `instructions/README.md` | 스킬 맵 테이블 |
+| 문서                                       | 업데이트 내용                   |
+| ------------------------------------------ | ------------------------------- |
+| `commands/setup.md`                        | 스킬 결정표, quick_ref 예시     |
+| `instructions/multi-agent/agent-roster.md` | 스킬 카탈로그, 연결 흐름        |
+| `README.md`                                | 스킬 목록 테이블, 디렉토리 구조 |
+| `FILE-MAP.md`                              | Skills 섹션, 흐름 다이어그램    |
+| `instructions/README.md`                   | 스킬 맵 테이블                  |
 
 ```
 # 예: test-unit 스킬 추가 시
