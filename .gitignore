@@ -1,7 +1,5 @@
-# Claude Code (로컬 전용 — 스킬은 추적)
+# Claude Code (설정 파일만 로컬)
 .claude/
-!.claude/skills/
-!.claude/skills/**
 
 # macOS
 .DS_Store
