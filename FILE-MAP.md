@@ -181,7 +181,7 @@
 
 | 파일 | 줄 수 | 설명 |
 |------|:-----:|------|
-| `model.md` | ~320 | **통합 사고 모델 + 복잡도 판단 (SSOT)**. `READ → REACT → ANALYZE → RESTRUCTURE → STRUCTURE → REFLECT` 6단계 인지 흐름. 복잡도(LOW/MEDIUM/HIGH)에 따라 단계 수 조절. 에이전트/모델 연계. 기존 로직 참조 원칙, lint/tsc 검증 체크리스트 포함. |
+| `model.md` | ~300 | **통합 사고 모델 + 복잡도 판단 (SSOT)**. `SCAN → ANALYZE → PLAN → BUILD → CHECK` 5단계 인지 흐름. 복잡도(LOW/MEDIUM/HIGH)에 따라 단계 수 조절. 에이전트/모델 연계. 기존 로직 참조 원칙, lint/tsc 검증 체크리스트 포함. |
 
 ### git/ — Git 워크플로우
 

@@ -205,14 +205,14 @@ cc-kit/
 모든 코드 작성 시 자동 적용:
 
 ```
-READ → REACT → ANALYZE → RESTRUCTURE → STRUCTURE → REFLECT
+SCAN → ANALYZE → PLAN → BUILD → CHECK
 ```
 
 복잡도에 따라 단계 수 조절:
 
-- **LOW** (1파일, 명확한 수정): READ → REACT
-- **MEDIUM** (2~5파일): READ → ANALYZE → STRUCTURE → REFLECT
-- **HIGH** (5파일+, 새 아키텍처): 전체 6단계 + Plan 에이전트
+- **LOW** (1파일, 명확한 수정): SCAN → BUILD → CHECK
+- **MEDIUM** (2~5파일): SCAN → ANALYZE → PLAN → BUILD → CHECK
+- **HIGH** (5파일+, 새 아키텍처): 전체 5단계 + Plan 에이전트
 
 ---
 
