@@ -51,7 +51,7 @@ git diff
 
 ### 3.5단계: 출시 품질 게이트 요약
 
-- `release-readiness-gate.md` 기준으로 팀원 작업 범위에서 PASS/FAIL을 간단히 정리한다
+- `release-gate.md` 기준으로 팀원 작업 범위에서 PASS/FAIL을 간단히 정리한다
 - FAIL 항목이 있으면 4단계(커밋) 진행 전 수정 또는 팀 리드에 리스크 보고
 
 ### 4단계: 커밋

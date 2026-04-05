@@ -13,7 +13,7 @@
 
 ### 필수 0.5: 인지 모델 기본 적용
 
-- 모든 작업은 통합 사고 모델을 기본 적용한다 (`.claude/instructions/workflow-patterns/thinking-model.md`)
+- 모든 작업은 통합 사고 모델을 기본 적용한다 (`.claude/workflows/thinking/model.md`)
 - 코드 작성 전 READ 단계 체크리스트를 반드시 수행:
   - 기존 유사 구현 검색
   - 디자인 시스템 컴포넌트 사용 패턴 확인
@@ -76,7 +76,7 @@ Basic Memory MCP가 설치된 프로젝트에서 아래 3가지 트리거에 따
 
 > **SSOT**: 복잡도 판단 기준은 아래 파일을 단일 기준으로 따른다.
 
-**참조**: `@../workflow-patterns/thinking-model.md` (복잡도 판단 기준 섹션)
+**참조**: `@../thinking/model.md` (복잡도 판단 기준 섹션)
 
 ### 필수 2: 파일 읽기 전 Read 사용
 
@@ -123,7 +123,7 @@ function getOrders(params: any): any {
 }
 ```
 
-**참조**: `@forbidden-patterns.md`
+**참조**: `@anti-patterns.md`
 
 ### 필수 5: TanStack Query 사용
 
@@ -203,7 +203,7 @@ Task(subagent_type="lint-fixer", model="haiku", ...)
 
 ### 필수 10: 모델 선택
 
-**참조**: `@../multi-agent/coordination-guide.md` (단일 진실 공급원)
+**참조**: `@../coordination/guide.md` (단일 진실 공급원)
 
 ---
 
@@ -237,7 +237,7 @@ git add src/{수정한 파일 경로}
 
 ### 필수 13: 출시 전 품질 게이트 통과
 
-- 커밋/PR 전 `release-readiness-gate.md` 5개 게이트를 모두 점검한다
+- 커밋/PR 전 `release-gate.md` 5개 게이트를 모두 점검한다
 - 하나라도 FAIL이면 원인/리스크를 정리하고 수정 후 재검증한다
 - 게이트 통과 전에는 커밋/PR을 진행하지 않는다
 
@@ -266,7 +266,7 @@ git add src/{수정한 파일 경로}
 
 - [ ] 커밋 메시지 형식 준수
 - [ ] 해당 파일만 커밋
-- [ ] release-readiness-gate PASS
+- [ ] release-gate PASS
 
 ---
 
@@ -274,9 +274,9 @@ git add src/{수정한 파일 경로}
 
 | 문서                        | 관련 필수 항목 |
 | --------------------------- | -------------- |
-| `forbidden-patterns.md`     | 4, 5, 6        |
-| `thinking-model.md`         | 1              |
+| `anti-patterns.md`          | 4, 5, 6        |
+| `model.md`                  | 1              |
 | `state-and-server-state.md` | 5              |
 | `unit-test-conventions.md`  | 8              |
-| `coordination-guide.md`     | 3, 9, 10       |
-| `release-readiness-gate.md` | 13             |
+| `guide.md`                  | 3, 9, 10       |
+| `release-gate.md`           | 13             |

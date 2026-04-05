@@ -272,7 +272,7 @@ PR 전 확인:
 
 | 문서                                            | 관련 금지 항목 |
 | ----------------------------------------------- | -------------- |
-| `@../../rules/core/react-nextjs-conventions.md` | 코드, Import   |
+| `@../../rules/core/react-conventions.md`        | 코드, Import   |
 | `@../../rules/core/state-and-server-state.md`   | 상태 관리      |
 | `@../../rules/core/unit-test-conventions.md`    | 테스트         |
-| `@../workflow-patterns/thinking-model.md`       | 워크플로우     |
+| `@../thinking/model.md`                         | 워크플로우     |

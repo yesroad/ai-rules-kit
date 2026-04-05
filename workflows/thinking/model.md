@@ -135,7 +135,7 @@ rg "{상태키워드}" src/
 
 **참조 대상:** 기존 유사 함수, 상수, enum 정의
 
-> **정책 유형별 상세 탐색 패턴**: `policy-definitions.md` 참조
+> **정책 유형별 상세 탐색 패턴**: `policies.md` 참조
 
 ### 디자인 시스템 컴포넌트 사용 (UI 작업 시 필수)
 
@@ -321,6 +321,6 @@ rg "Typography" src/ --type tsx | head -10
 
 | 문서                                               | 용도               |
 | -------------------------------------------------- | ------------------ |
-| `@../multi-agent/coordination-guide.md`            | 병렬 실행 원칙     |
-| `@../multi-agent/coordination-guide.md`            | 모델 선택 기준 (모델 라우팅 포함) |
-| `@../validation/forbidden-patterns.md`             | 금지 패턴          |
+| `@../coordination/guide.md`                        | 병렬 실행 원칙     |
+| `@../coordination/guide.md`                        | 모델 선택 기준 (모델 라우팅 포함) |
+| `@../quality-gates/anti-patterns.md`               | 금지 패턴          |
