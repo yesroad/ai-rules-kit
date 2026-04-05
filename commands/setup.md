@@ -49,9 +49,9 @@ ls tailwind.config.* 2>/dev/null || true
 
 0단계 감지 결과가 있으면 사용자에게 확인을 받는다.
 
-**진행 방식:**
+**진행 방식 (순서대로 엄격히 지킨다):**
 
-1. 감지 결과를 요약하여 보여준다:
+**STEP A. 감지 결과만 보여주고 Y/n을 받는다** — 이 메시지에 다른 질문을 추가하지 않는다:
    ```
    📋 감지된 기술 스택:
    - 프레임워크: Next.js (App Router)
@@ -62,11 +62,17 @@ ls tailwind.config.* 2>/dev/null || true
 
    이대로 진행할까요? (Y/n)
    ```
-2. `Y` 또는 엔터 → 감지 항목 확정, **미감지 항목만 질문**
-3. `n` → 감지 결과 무시, **모든 질문을 처음부터 순서대로 진행**
-4. 감지된 항목이 하나도 없으면 → 모든 질문을 순서대로 진행
 
-> **⚠️ 중요: 미감지 항목이 여러 개면 한 번에 모두 묻는다.**
+**STEP B. Y/n 응답을 받은 후** 다음 중 하나를 실행한다:
+- `Y` 또는 엔터 → 감지 항목 확정. 미감지 항목(Q1~Q6 중 감지 안 된 것)을 순서대로 **하나씩** 질문
+- `n` → 감지 결과 무시. Q1~Q6을 순서대로 **하나씩** 질문
+- 감지된 항목이 하나도 없으면 → Q1~Q6을 순서대로 **하나씩** 질문
+
+질문 후 대답을 받으면 다음 질문으로 넘어간다. Q1~Q6이 모두 확정되면 Q7, Q8을 순서대로 **하나씩** 질문한다.
+
+> **⚠️ Q7(MCP)과 Q8(Basic Memory)는 항상 묻는 항목이다.** 감지 여부와 무관하게 반드시 포함한다.
+>
+> **⚠️ 질문은 반드시 하나씩 순서대로 한다. 여러 질문을 한 번에 보내지 않는다.**
 > 모든 답변을 받은 뒤 2단계로 넘어간다.
 
 아래는 **미감지 시 질문할 내용**입니다:
@@ -131,19 +137,25 @@ ls tailwind.config.* 2>/dev/null || true
 
 **Q7. MCP 서버** (복수 선택 가능)
 
-| 번호 | 서버         | 용도                                               |
-| ---- | ------------ | -------------------------------------------------- |
-| 1    | Figma        | 피그마 디자인 파일 읽기 (API 키 필요)              |
-| 2    | Supabase     | DB 쿼리, 마이그레이션, Edge Function (API 키 필요) |
-| 3    | Playwright   | 브라우저 자동화, E2E 테스트 (설정 불필요)          |
-| 4    | Atlassian    | Jira·Confluence 연동 (API 키 필요)                 |
-| 5    | shadcn       | shadcn/ui 컴포넌트 검색 및 설치 (설정 불필요)      |
-| 6    | Basic Memory | 세션 간 프로젝트 메모리 (설정 불필요)              |
-| 7    | 없음         |                                                    |
+| 번호 | 서버       | 용도                                               |
+| ---- | ---------- | -------------------------------------------------- |
+| 1    | Figma      | 피그마 디자인 파일 읽기 (API 키 필요)              |
+| 2    | Supabase   | DB 쿼리, 마이그레이션, Edge Function (API 키 필요) |
+| 3    | Playwright | 브라우저 자동화, E2E 테스트 (설정 불필요)          |
+| 4    | Atlassian  | Jira·Confluence 연동 (API 키 필요)                 |
+| 5    | shadcn     | shadcn/ui 컴포넌트 검색 및 설치 (설정 불필요)      |
+| 6    | 없음       |                                                    |
 
 예시: "1 3" → Figma + Playwright 설치
 
-> **참고**: Q6 이전 → Q7로 번호 변경됨
+---
+
+**Q8. Basic Memory** — 세션이 끊겨도 프로젝트 컨텍스트를 기억합니다. 사용하시겠어요?
+
+1. 예
+2. 아니오
+
+> Basic Memory는 로컬에서만 실행되며 별도 API 키가 필요 없습니다.
 
 ---
 
@@ -153,16 +165,22 @@ ls tailwind.config.* 2>/dev/null || true
 
 Q7 답변을 기반으로 스크립트 실행 전에 `SELECTED_MCP` 변수를 설정합니다:
 
-| Q7 선택               | SELECTED_MCP 값         |
-| --------------------- | ----------------------- |
-| 1 (Figma)             | `Figma`                 |
-| 2 (Supabase)          | `supabase`              |
-| 3 (Playwright)        | `playwright`            |
-| 4 (Atlassian)         | `Atlassian`             |
-| 5 (shadcn)            | `shadcn`                |
-| 6 (Basic Memory)      | `basic-memory`          |
-| 복수 선택 "1 3"       | `Figma,playwright`      |
-| 7 또는 엔터           | (빈 문자열, 설치 안 함) |
+| Q7 선택         | SELECTED_MCP 값         |
+| --------------- | ----------------------- |
+| 1 (Figma)       | `Figma`                 |
+| 2 (Supabase)    | `supabase`              |
+| 3 (Playwright)  | `playwright`            |
+| 4 (Atlassian)   | `Atlassian`             |
+| 5 (shadcn)      | `shadcn`                |
+| 복수 선택 "1 3" | `Figma,playwright`      |
+| 6 또는 엔터     | (빈 문자열, 설치 안 함) |
+
+Q8 답변을 기반으로 `INSTALL_BASIC_MEMORY` 변수를 설정합니다:
+
+| Q8 선택  | INSTALL_BASIC_MEMORY 값 |
+| -------- | ----------------------- |
+| 1 (예)   | `y`                     |
+| 2 또는 엔터 | (빈 문자열)          |
 
 ```bash
 #!/bin/bash
@@ -236,7 +254,7 @@ PYEOF
 # .mcp.json: Q7 선택 서버만 추가 (없으면 새로 생성, 있으면 선택 항목만 머지)
 # SELECTED_MCP: Q7 답변 기반으로 Claude가 설정 — 쉼표 구분 서버 키 목록
 # 예) SELECTED_MCP="Figma,playwright" 또는 SELECTED_MCP="" (없음)
-# 서버 키 매핑: 1=Figma, 2=supabase, 3=playwright, 4=Atlassian
+# 서버 키 매핑: 1=Figma, 2=supabase, 3=playwright, 4=Atlassian, 5=shadcn
 if [ -n "$SELECTED_MCP" ] && [ -f "$PLUGIN_ROOT/.mcp.json" ]; then
   MCP_TEMPLATE="$PLUGIN_ROOT/.mcp.json" MCP_SELECTED="$SELECTED_MCP" python3 - <<'PYEOF'
 import json, os
@@ -278,6 +296,40 @@ if added:
     print(f"📋 .mcp.json 완료 — 추가된 서버: {', '.join(added)}")
 else:
     print("📋 .mcp.json 변경 없음 (선택 서버가 이미 존재)")
+PYEOF
+fi
+
+# Basic Memory MCP: Q8 y/n 기반으로 Claude가 설정
+# INSTALL_BASIC_MEMORY="y" 또는 "" (설치 안 함)
+if [ "$INSTALL_BASIC_MEMORY" = "y" ] && [ -f "$PLUGIN_ROOT/.mcp.json" ]; then
+  MCP_TEMPLATE="$PLUGIN_ROOT/.mcp.json" python3 - <<'PYEOF'
+import json, os
+
+template_path = os.environ["MCP_TEMPLATE"]
+with open(template_path) as f:
+    template = json.load(f)
+
+basic_memory_config = template.get("mcpServers", {}).get("basic-memory")
+if not basic_memory_config:
+    print("❌ basic-memory 설정을 찾을 수 없습니다")
+    exit(0)
+
+if os.path.exists(".mcp.json"):
+    with open(".mcp.json") as f:
+        existing = json.load(f)
+else:
+    existing = {}
+
+existing_servers = existing.setdefault("mcpServers", {})
+
+if "basic-memory" not in existing_servers:
+    existing_servers["basic-memory"] = basic_memory_config
+    with open(".mcp.json", "w") as f:
+        json.dump(existing, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    print("📋 .mcp.json Basic Memory 추가 완료")
+else:
+    print("📋 .mcp.json Basic Memory 이미 존재 — 건드리지 않음")
 PYEOF
 fi
 
