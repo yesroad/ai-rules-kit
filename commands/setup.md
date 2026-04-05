@@ -256,6 +256,10 @@ if "Stop" not in hooks:
 if "planMode" not in settings:
     settings["planMode"] = True
 
+# Plan Mode 계획 파일을 프로젝트 로컬에 저장
+if "plansDirectory" not in settings:
+    settings["plansDirectory"] = "./.claude/plans"
+
 with open(settings_path, "w") as f:
     json.dump(settings, f, indent=2, ensure_ascii=False)
     f.write("\n")
@@ -476,7 +480,8 @@ directive-generator가 생성한 CLAUDE.md에 `<quick_ref>` 섹션이 없으면 
 <quick_ref>
 | 상황 | 커맨드/스킬 |
 |------|------------|
-| 작업 시작 | /start |
+| 작업 시작 (계획) | /start |
+| 구현 + 검증 | /work |
 | 작업 완료+PR | /done |
 | 커밋 | /commit |
 | UI 구현 | web-design 스킬 |
@@ -499,7 +504,8 @@ directive-generator가 생성한 CLAUDE.md에 `<quick_ref>` 섹션이 없으면 
 <quick_ref>
 | 상황 | 커맨드/스킬 |
 |------|------------|
-| 작업 시작 | /start |
+| 작업 시작 (계획) | /start |
+| 구현 + 검증 | /work |
 | 작업 완료+PR | /done |
 | 커밋 | /commit |
 | 컴포넌트 생성 | component-creator 스킬 |
@@ -532,7 +538,8 @@ directive-generator가 생성한 CLAUDE.md에 `<quick_ref>` 섹션이 없으면 
   CLAUDE.md             — 프로젝트 루트 지시문 (새로 생성)
 
 📋 사용 가능한 커맨드:
-  /start          — 작업 시작 (코드 분석 → 계획 → 구현 확인)
+  /start          — 작업 시작 (Plan Mode → 분석 → 계획 생성)
+  /work           — 구현 + 검증 (계획 읽기 → 구현 → 계획 대비 검증)
   /done           — 작업 완료 (검증 → 커밋 → PR 생성)
   /commit         — 커밋 플로우 자동화
   /test           — 단위 → 통합 → E2E 테스트 순차 실행

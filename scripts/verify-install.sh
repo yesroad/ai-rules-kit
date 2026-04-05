@@ -246,7 +246,7 @@ fi
 # ---------------------------------------------------------------------------
 section "6. commands/"
 
-EXPECTED_COMMANDS=("commit.md" "done.md" "setup.md" "setup-notifier.md" "start.md" "test.md" "update-cc-kit.md")
+EXPECTED_COMMANDS=("commit.md" "done.md" "setup.md" "setup-notifier.md" "start.md" "test.md" "update-cc-kit.md" "work.md")
 EXPECTED_COMMAND_COUNT=${#EXPECTED_COMMANDS[@]}
 
 if [ ! -d ".claude/commands" ]; then

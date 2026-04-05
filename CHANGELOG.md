@@ -4,6 +4,21 @@
 
 ---
 
+## [1.1.0] - 2026-04-05
+
+### Added
+
+- **`/work` 커맨드 신규**: 계획 기반 구현 + 계획 대비 검증 + FAIL 시 재작업 루프
+- **`plansDirectory` 설정**: `/setup` 시 settings.json에 추가, Plan Mode 계획 파일을 프로젝트 로컬(`.claude/plans/`)에 저장
+
+### Changed
+
+- **`/start` 커맨드**: Plan Mode 자동 진입(`EnterPlanMode`), 계획만 수행하고 구현은 `/work`로 분리
+- **워크플로우**: `/start` → `/work` → `/done` 3단계 사이클로 변경
+- **Commands 수**: 7개 → 8개
+
+---
+
 ## [1.0.0] - 2026-04-05
 
 ### 포함 항목

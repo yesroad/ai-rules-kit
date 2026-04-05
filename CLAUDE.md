@@ -22,5 +22,6 @@ cc-kit은 Claude Code용 AI 코딩 하네스 플러그인입니다.
 | `README.md`                          | 목록 테이블, 디렉토리 구조           |
 | `FILE-MAP.md`                        | 섹션별 항목, 흐름 다이어그램         |
 | `scripts/verify-install.sh`          | 파일 수·이름 배열                    |
+| `CHANGELOG.md`                       | 버전·변경 이력 추가                  |
 
 </dev_rules>

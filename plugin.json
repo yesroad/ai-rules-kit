@@ -1,6 +1,6 @@
 {
   "name": "cc-kit",
-  "description": "AI 코딩 워크플로우 보일러플레이트 — rules, skills, agents, commands를 포함한 Claude Code 확장 키트",
+  "description": "Claude Code 프론트엔드 AI 코딩 하네스 (rules · agents · skills · commands)",
   "version": "1.0.0",
   "author": {
     "name": "yesroad"

@@ -242,8 +242,10 @@ bug-fix (버그 수정)
 refactor (리팩토링)
   └→ test-unit (정책 보호 테스트)
 
-/done (작업 완료)
-  └→ PR 생성 후 pr-responder (리뷰 대응)
+/start (작업 계획)
+  └→ /work (구현 + 검증)
+      └→ /done (품질 검증 → 커밋 → PR)
+          └→ pr-responder (리뷰 대응)
 
 migration-helper (라이브러리 업그레이드)
   └→ test-unit 또는 test-integration (마이그레이션 범위에 따라)
