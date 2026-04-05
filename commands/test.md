@@ -18,6 +18,14 @@ description: 단위 → 통합 → E2E 테스트를 순서대로 실행. "테스
 /test --unit-only
 /test --skip-e2e
 
+## 진행 상황 추적
+
+실행 시작 시 아래 항목을 TaskCreate로 등록한다. 각 Step 시작 시 `in_progress`, 완료 시 `completed`로 TaskUpdate한다.
+
+- 단위 테스트
+- 통합 테스트
+- E2E 테스트
+
 ## 실행 흐름
 
 ### Step 1: 단위 테스트 (test-unit)

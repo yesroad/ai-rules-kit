@@ -16,6 +16,20 @@ description: main 최신화 → 작업 브랜치 생성 → 커밋/푸시 → ma
 
 ---
 
+## 진행 상황 추적
+
+실행 시작 시 아래 항목을 TaskCreate로 등록한다. 각 Step 시작 시 `in_progress`, 완료 시 `completed`로 TaskUpdate한다.
+
+- 기준 브랜치 최신화
+- 작업 브랜치 생성
+- 커밋 메시지 생성 & 커밋
+- 푸시
+- 기준 브랜치 머지
+- 작업 브랜치 삭제
+- 기준 브랜치 최신화
+
+---
+
 ## 사전 확인
 
 1. `git diff --staged --name-only`로 staged 변경사항이 있는지 확인
