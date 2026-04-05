@@ -1,5 +1,5 @@
 ---
-name: next-project-structure
+name: nextjs-scaffold
 user-invocable: true
 description: >
   Next.js 프로젝트에서 여러 레이어를 아우르는 도메인 전체를 스캐폴딩하거나, 파일 위치/폴더 구조를 안내할 때 사용.
@@ -12,7 +12,7 @@ description: >
   CLAUDE.md 없는 새 프로젝트나 문서가 부족한 프로젝트에서 특히 유용하다.
 ---
 
-# next-project-structure
+# nextjs-scaffold
 
 > Next.js 프로젝트에 일관된 폴더 구조와 코드 패턴을 적용하는 스킬.
 > **이 스킬 자체가 패턴의 기준**이다 — CLAUDE.md에 의존하지 말고 이 스킬의 패턴을 따른다.

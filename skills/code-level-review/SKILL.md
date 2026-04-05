@@ -1,5 +1,5 @@
 ---
-name: nextjs-coding-convention
+name: code-level-review
 description: >
   Next.js + React 코드 작성 시 시니어 기준 컨벤션 적용 및 레벨 진단.
   "코드 리뷰해줘", "이 패턴 맞아?", "더 좋은 방법", "시니어 패턴으로", "nextjs 컨벤션",
@@ -9,10 +9,20 @@ description: >
 user-invocable: true
 ---
 
-# nextjs-coding-convention
+# code-level-review
 
 > Next.js + React 코드를 시니어 기준으로 작성하고, 기존 코드의 레벨을 진단한다.
 > **기술 스택**: Next.js 16 + React 19.2 + TypeScript + Zustand + React Query v5 + Axios
+
+---
+
+## 진행 상황 추적
+
+실행 시작 시 아래 항목을 TaskCreate로 등록한다. 각 단계 시작 시 `in_progress`, 완료 시 `completed`로 TaskUpdate한다.
+
+- 코드 탐색
+- 레벨 진단
+- 리포트 생성
 
 ---
 

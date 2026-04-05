@@ -1,5 +1,5 @@
 ---
-name: agents-generator
+name: directive-generator
 description: 프로젝트를 분석하고 도구 우선순위에 맞는 루트 지시문(CLAUDE.md 또는 AGENTS.md)을 생성/업데이트합니다. "루트 지시문 생성", "CLAUDE.md 만들어줘", "AGENTS.md 업데이트", "프로젝트 규칙 파일 만들어줘" 같은 요청에 반드시 사용하세요. 모노레포 자동 감지 및 워크스페이스별 중첩 파일 생성 지원.
 user-invocable: true
 disable-model-invocation: false

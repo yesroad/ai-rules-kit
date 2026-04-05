@@ -1,5 +1,5 @@
 ---
-name: pr-review-responder
+name: pr-responder
 description: PR 리뷰 코멘트 분석 및 대응. "리뷰 반영", "코멘트 처리", "리뷰어 피드백", PR 번호/URL이 제공될 때 이 스킬을 활성화. 수용/거절/질문으로 분류 후 수용 항목 자동 구현.
 user-invocable: true
 allowed-tools: Bash, Read, Edit, Grep, Glob
@@ -162,7 +162,7 @@ Task(subagent_type="explore", model="haiku", prompt="변경 대상 파일 분석
 
 ## 완료 전 출시 게이트
 
-`release-readiness-gate.md` 5개 게이트 점검 후 커밋.
+`release-gate.md` 5개 게이트 점검 후 커밋.
 
 ---
 
@@ -172,4 +172,4 @@ Task(subagent_type="explore", model="haiku", prompt="변경 대상 파일 분석
 |------|------|
 | `@../../skills/commit-helper/SKILL.md` | 커밋 메시지 생성 |
 | `@../../skills/code-quality/SKILL.md` | 린트/타입 검증 |
-| `@../../instructions/validation/release-readiness-gate.md` | 출시 게이트 |
+| `@../../workflows/quality-gates/release-gate.md` | 출시 게이트 |
