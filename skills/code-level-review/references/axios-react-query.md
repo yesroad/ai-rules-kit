@@ -18,57 +18,65 @@ function UserList() {
 }
 ```
 
-### 🔵 미들 — lib/axios.ts 인스턴스 분리
+### 🔵 미들 — services/instance.ts 분리 + named export 서비스 객체
 
 ```typescript
-// lib/axios.ts
+// services/instance.ts
 import axios from 'axios'
 
-const api = axios.create({
+const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 10000,
+  timeout: 10_000,
   headers: { 'Content-Type': 'application/json' },
 })
 
-export default api
-
-// services/api/user.ts
-import api from '@/lib/axios'
-export const userService = {
-  getUsers: () => api.get<User[]>('/users').then(r => r.data),
-  getUser: (id: number) => api.get<User>(`/users/${id}`).then(r => r.data),
-}
-```
-
-### 🔴 시니어 — 인터셉터 + 토큰 갱신 + 에러 중앙 처리
-
-```typescript
-// lib/axios.ts
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 10000,
-})
-
-// 요청 인터셉터: 토큰 자동 주입
-api.interceptors.request.use((config) => {
+instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken')
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
-// 응답 인터셉터: 에러 코드별 중앙 처리
-api.interceptors.response.use(
-  (response) => response,
+export default instance
+
+// services/api/user.ts
+import instance from '../instance'
+export const userService = {
+  getAll: () => instance.get<APIResponse<User[]>>('/users'),
+  getById: (id: number) => instance.get<APIResponse<User>>(`/users/${id}`),
+  create: (data: UserRequest) => instance.post<APIResponse<User>>('/users', data),
+}
+```
+
+### 🔴 시니어 — 인터셉터 + 토큰 갱신 + queryOptions 팩토리
+
+```typescript
+// services/instance.ts
+import axios from 'axios'
+
+const instance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 10_000,
+})
+
+// 요청 인터셉터: 토큰 자동 주입
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('accessToken')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
+
+// 응답 인터셉터: 401 토큰 갱신 (무한 루프 방지: _retry 플래그)
+instance.interceptors.response.use(
+  (res) => res,
   async (error) => {
-    if (error.response?.status === 401) {
-      // refresh token으로 재발급 시도
+    if (error.response?.status === 401 && !error.config._retry) {
+      error.config._retry = true
       try {
-        const { data } = await axios.post('/auth/refresh', { token: localStorage.getItem('refreshToken') })
+        const { data } = await axios.post('/auth/refresh',
+          { token: localStorage.getItem('refreshToken') })
         localStorage.setItem('accessToken', data.accessToken)
         error.config.headers.Authorization = `Bearer ${data.accessToken}`
-        return api.request(error.config)
+        return instance.request(error.config)
       } catch {
         window.location.href = '/login'
       }
@@ -77,7 +85,7 @@ api.interceptors.response.use(
   }
 )
 
-export default api
+export default instance
 ```
 
 ---
@@ -101,78 +109,80 @@ function UserList() {
 }
 ```
 
-### 🔵 미들 — useQuery + queryKey 팩토리
+### 🔵 미들 — queryOptions 팩토리 + useQuery
 
 ```typescript
-// queries/userQueries.ts
-export const userKeys = {
-  all: ['users'] as const,
-  lists: () => [...userKeys.all, 'list'] as const,
-  detail: (id: number) => [...userKeys.all, 'detail', id] as const,
+// queries/types.ts
+import type { QueryObserverOptions } from '@tanstack/react-query'
+export type UseQueryOptionsBase<TData, TSelectData = TData> = Omit<
+  QueryObserverOptions<TData, Error, TSelectData>,
+  'queryKey' | 'queryFn'
+>
+
+// queries/user/index.ts
+import { queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { userService } from '@/services/api/user'
+import type { UseQueryOptionsBase } from '@/queries/types'
+
+export const userOptions = {
+  list: (params?: UserListRequest, options?: UseQueryOptionsBase<UserListResponse>) =>
+    queryOptions({
+      queryKey: ['user', 'list', { params }],
+      queryFn: () => userService.getAll(params),
+      ...options,
+    }),
+  detail: <T = User>(id: number, options?: UseQueryOptionsBase<User, T>) =>
+    queryOptions({
+      queryKey: ['user', 'detail', { id }],
+      queryFn: () => userService.getById(id),
+      ...options,
+    }),
 }
 
-export const useUsers = () =>
-  useQuery({
-    queryKey: userKeys.lists(),
-    queryFn: () => api.get<User[]>('/users').then(r => r.data),
-    staleTime: 5 * 60 * 1000,
-  })
+// 리스트 — <Suspense> 필수
+export const useUserList = (params?: UserListRequest) =>
+  useSuspenseQuery(userOptions.list(params))
 
-export const useCreateUser = () => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (data: CreateUserDto) => api.post('/users', data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: userKeys.lists() }),
-  })
-}
+// 상세 — 조건부 enabled 가능
+export const useUserDetail = (id: number) =>
+  useQuery(userOptions.detail(id, { enabled: !!id }))
 ```
 
-### 🔴 시니어 — queryOptions API + useSuspenseQuery + Optimistic Update
+### 🔴 시니어 — queryOptions + Optimistic Update + prefetch
 
 ```typescript
-// queries/userQueries.ts
-import { queryOptions } from '@tanstack/react-query'
-
-export const userQueries = {
-  detail: (id: number) => queryOptions({
-    queryKey: ['users', id],
-    queryFn: () => api.get<User>(`/users/${id}`).then(r => r.data),
-    staleTime: 10 * 60 * 1000,
-  }),
-  list: () => queryOptions({
-    queryKey: ['users', 'list'],
-    queryFn: () => api.get<User[]>('/users').then(r => r.data),
-  }),
-}
-
-// useSuspenseQuery — data는 항상 defined
-const UserProfile = ({ id }: { id: number }) => {
-  const { data } = useSuspenseQuery(userQueries.detail(id))
-  return <div>{data.name}</div>
-}
-
-// 어디서든 타입 안전하게 재사용
-queryClient.prefetchQuery(userQueries.detail(userId))  // 라우터 프리패치
-queryClient.setQueryData(userQueries.detail(userId).queryKey, newUser)  // 캐시 직접 업데이트
-
-// Optimistic Update
-const useUpdateUser = () => {
+// queries/user/mutations.ts
+export function useUpdateUser() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (user: UpdateUserDto) => api.put(`/users/${user.id}`, user),
-    onMutate: async (newUser) => {
-      await queryClient.cancelQueries({ queryKey: ['users', newUser.id] })
-      const previous = queryClient.getQueryData(['users', newUser.id])
-      queryClient.setQueryData(['users', newUser.id], newUser)
+    mutationFn: ({ id, data }: { id: number; data: UserRequest }) =>
+      userService.update(id, data),
+    // Optimistic Update: 즉시 UI 반영
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ['user', 'detail', { id }] })
+      const previous = queryClient.getQueryData(userOptions.detail(id).queryKey)
+      queryClient.setQueryData(userOptions.detail(id).queryKey, data)
       return { previous }
     },
-    onError: (_err, newUser, context) => {
-      queryClient.setQueryData(['users', newUser.id], context?.previous)
+    onError: (_err, { id }, context) => {
+      queryClient.setQueryData(userOptions.detail(id).queryKey, context?.previous)
     },
-    onSettled: (_data, _err, newUser) => {
-      queryClient.invalidateQueries({ queryKey: ['users', newUser.id] })
+    onSettled: (_data, _err, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ['user', 'detail', { id }] })
     },
   })
+}
+
+// 라우터에서 프리패치 (Next.js App Router)
+// app/users/[id]/page.tsx
+export default async function UserPage({ params }: { params: { id: string } }) {
+  const queryClient = new QueryClient()
+  await queryClient.prefetchQuery(userOptions.detail(Number(params.id)))
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <UserDetailView id={Number(params.id)} />
+    </HydrationBoundary>
+  )
 }
 ```
 

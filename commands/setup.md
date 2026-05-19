@@ -449,6 +449,7 @@ echo "✅ .claude/ 설치 완료"
 | `accessibility.md`                               | `rules/core/`              | Q1 = Next.js 또는 React              |
 | `validation-patterns.md`                         | `rules/optional/`          | Q6 = Zod                             |
 | `tailwindcss-v4.md`                              | `rules/optional/`          | Q3 = TailwindCSS **AND** Q3-1 = v4   |
+| `emotion.md`                                     | `rules/optional/`          | Q3 = Emotion                         |
 
 > **Q1 = 기타**: `model.md`(`workflows/thinking/`), `required-patterns.md`, `anti-patterns.md`, `unit-test-conventions.md`, `pr-guide.md`(`workflows/git/`), `policies.md`만 포함. 프론트엔드 전용 rules (`coding-standards.md`, `react-*`, `nextjs-*`, `state-*`, `accessibility.md`)는 제외.
 
